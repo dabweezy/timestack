@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }, [initializeSampleData])
 
   return (
-    <div className="h-screen flex overflow-hidden bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200">
+    <div className="h-screen flex overflow-hidden bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200" style={{background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%)'}}>
       {/* Desktop Sidebar */}
       <div className="hidden lg:flex">
         <Sidebar />
