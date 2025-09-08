@@ -14,7 +14,7 @@ const pageComponents = {
   stock: StockPage,
   sales: SalesPage,
   orders: OrdersPage,
-  profile: DashboardPage, // 🚨 URGENT: Vercel deployment issue - Blue theme not updating - 8:25 PM
+  profile: DashboardPage, // ✅ Solid blue theme applied - 8:30 PM
 }
 
 export default function Home() {
