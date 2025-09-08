@@ -51,25 +51,25 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
         transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] }
       }}
       className={clsx(
-        'flex flex-col h-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900',
-        'border-r border-slate-700/50 backdrop-blur-xl',
+        'flex flex-col h-full bg-gradient-to-b from-blue-600 via-blue-700 to-blue-800',
+        'border-r border-blue-500/30 backdrop-blur-xl',
         isMobile && 'fixed inset-y-0 left-0 z-50 w-64'
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-slate-700/50">
+      <div className="flex items-center justify-between p-4 border-b border-blue-500/30">
         <motion.div
           animate={{ opacity: sidebarCollapsed ? 0 : 1 }}
           transition={{ duration: 0.2 }}
           className="flex items-center space-x-3"
         >
-          <div className="w-8 h-8 bg-gradient-to-br from-apple-blue to-apple-purple rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
             <WifiIcon className="w-5 h-5 text-white" />
           </div>
           {!sidebarCollapsed && (
             <div className="text-white">
               <div className="font-sf-pro font-semibold text-lg">Timestack</div>
-              <div className="text-xs text-slate-400">Luxury Inventory</div>
+              <div className="text-xs text-blue-200">Luxury Inventory</div>
             </div>
           )}
         </motion.div>
@@ -77,7 +77,7 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
         {!isMobile && (
           <button
             onClick={handleToggleSidebar}
-            className="p-1.5 rounded-lg hover:bg-slate-700/50 text-slate-400 hover:text-white transition-colors"
+            className="p-1.5 rounded-lg hover:bg-white/10 text-blue-200 hover:text-white transition-colors"
           >
             <motion.div
               animate={{ rotate: sidebarCollapsed ? 180 : 0 }}
@@ -102,14 +102,14 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
               className={clsx(
                 'w-full flex items-center px-3 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 relative group',
                 isActive
-                  ? 'bg-white/10 text-white shadow-lg backdrop-blur-sm'
-                  : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                  ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm'
+                  : 'text-blue-100 hover:bg-white/10 hover:text-white'
               )}
             >
               {isActive && (
                 <motion.div
                   layoutId="activeIndicator"
-                  className="absolute inset-0 bg-gradient-to-r from-apple-blue/20 to-apple-purple/20 rounded-xl border border-apple-blue/30"
+                  className="absolute inset-0 bg-white/10 rounded-xl border border-white/20"
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
               )}
@@ -128,9 +128,9 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
               )}
 
               {sidebarCollapsed && (
-                <div className="absolute left-full ml-3 px-2 py-1 bg-slate-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20 shadow-lg border border-slate-700">
+                <div className="absolute left-full ml-3 px-2 py-1 bg-blue-800 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-20 shadow-lg border border-blue-600">
                   {item.name}
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-slate-800 border-l border-t border-slate-700 rotate-45" />
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-blue-800 border-l border-t border-blue-600 rotate-45" />
                 </div>
               )}
             </motion.button>
@@ -139,14 +139,14 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
       </nav>
 
       {/* System Status */}
-      <div className="p-4 border-t border-slate-700/50">
+      <div className="p-4 border-t border-blue-500/30">
         <div className="flex items-center space-x-3">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
           {!sidebarCollapsed && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-xs text-slate-400"
+              className="text-xs text-blue-200"
             >
               System Online
             </motion.div>
