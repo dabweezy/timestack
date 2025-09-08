@@ -51,7 +51,7 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
         transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] }
       }}
       className={clsx(
-        'flex flex-col h-full bg-gradient-to-b from-blue-600 via-blue-700 to-blue-800',
+        'flex flex-col h-full bg-blue-600',
         'border-r border-blue-500/30 backdrop-blur-xl',
         isMobile && 'fixed inset-y-0 left-0 z-50 w-64'
       )}
