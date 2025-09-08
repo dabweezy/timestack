@@ -81,8 +81,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <motion.div 
           className={clsx(
             'flex-1 flex flex-col transition-all duration-300 ease-in-out',
-            'lg:mt-1.5 lg:mr-1.5 lg:mb-1.5'
+            'lg:mt-1.5 lg:mr-1.5'
           )}
+          style={{ marginBottom: '0.35rem' }}
         >
           <div className="flex-1 bg-white lg:rounded-4xl shadow-timestack overflow-hidden relative">
             {/* Header */}
