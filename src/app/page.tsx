@@ -14,7 +14,7 @@ const pageComponents = {
   stock: StockPage,
   sales: SalesPage,
   orders: OrdersPage,
-  profile: DashboardPage, // 🚀 Live deployment test - Updated at 8:05 PM
+  profile: DashboardPage, // 🎨 Blue theme deployment test - Updated at 8:15 PM
 }
 
 export default function Home() {
