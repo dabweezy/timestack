@@ -14,7 +14,7 @@ const pageComponents = {
   stock: StockPage,
   sales: SalesPage,
   orders: OrdersPage,
-  profile: DashboardPage, // ✅ Solid blue theme applied - 8:30 PM
+  profile: DashboardPage, // 🚀 Fresh Vercel project deployment test
 }
 
 export default function Home() {
