@@ -67,6 +67,11 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
+      {/* Test Message */}
+      <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+        🚀 <strong>Live Update Test!</strong> This message was added at 8:05 PM to test the deployment workflow.
+      </div>
+      
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         {statsConfig.map((stat, index) => (

@@ -14,7 +14,7 @@ const pageComponents = {
   stock: StockPage,
   sales: SalesPage,
   orders: OrdersPage,
-  profile: DashboardPage, // Fallback for now - Updated for testing
+  profile: DashboardPage, // 🚀 Live deployment test - Updated at 8:05 PM
 }
 
 export default function Home() {
