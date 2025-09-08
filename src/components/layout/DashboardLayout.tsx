@@ -85,18 +85,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           )}
           style={{ marginBottom: '0.35rem' }}
         >
-          <div className="flex-1 bg-white lg:rounded-4xl shadow-timestack overflow-hidden relative">
+          <div className="flex-1 bg-white lg:rounded-4xl shadow-timestack overflow-hidden relative flex flex-col">
             {/* Header */}
             <Header onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)} />
             
             {/* Content */}
-            <main className="flex-1 overflow-y-auto p-6 lg:p-8">
+            <main className="flex-1 overflow-y-auto overflow-x-hidden p-6 lg:p-8">
               <motion.div
                 key={useAppStore.getState().currentPage}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="h-full"
               >
                 {children}
               </motion.div>
