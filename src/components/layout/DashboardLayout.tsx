@@ -84,7 +84,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             'lg:mt-1.5 lg:mr-1.5 lg:mb-1.5'
           )}
         >
-          <div className="flex-1 bg-white lg:rounded-4xl shadow-timestack overflow-hidden relative flex flex-col">
+          <div className="flex-1 bg-white lg:rounded-4xl shadow-timestack relative flex flex-col">
             {/* Header */}
             <Header onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)} />
             
