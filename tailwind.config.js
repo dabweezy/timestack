@@ -1,0 +1,61 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        'sf-pro': ['"SF Pro Display"', '"SF Pro Text"', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+        'guaruja': ['"Guaruja Grotesk"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+      },
+      colors: {
+        apple: {
+          blue: '#007aff',
+          lightblue: '#5ac8fa',
+          green: '#34c759',
+          orange: '#ff9500',
+          red: '#ff3b30',
+          purple: '#5856d6',
+        },
+        timestack: {
+          dark: '#1d1d1f',
+          gray: '#515154',
+          lightgray: '#86868b',
+          border: '#e5e5e7',
+          background: '#f5f5f7',
+        }
+      },
+      borderRadius: {
+        'xl': '12px',
+        '2xl': '16px',
+        '3xl': '20px',
+        '4xl': '24px',
+      },
+      boxShadow: {
+        'apple': '0 4px 20px rgba(0, 122, 255, 0.3)',
+        'timestack': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+      },
+      animation: {
+        'fade-in': 'fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(24px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(32px) scale(0.98)' },
+          '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+        },
+      },
+    },
+  },
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+  ],
+}

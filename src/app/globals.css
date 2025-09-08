@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800&family=SF+Pro+Text:wght@300;400;500;600&display=swap');
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Prevent elastic scrolling on iOS */
+body {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Custom form styles */
+.form-input {
+  @apply block w-full rounded-xl border-gray-300 shadow-sm focus:border-apple-blue focus:ring focus:ring-apple-blue focus:ring-opacity-20 transition-colors duration-200;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-xl font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.btn-primary {
+  @apply bg-apple-blue text-white hover:bg-blue-700 focus:ring-apple-blue;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500;
+}
+
+/* Apple-style animations */
+.animate-apple-fade-in {
+  animation: appleFadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes appleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(32px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Custom component styles */
+.tron-logo-container {
+  --slug-color: #ffffff;
+  --base-stroke: rgba(255,255,255,.4);
+  --stroke-width: 2;
+  --slug-length: 80;
+}

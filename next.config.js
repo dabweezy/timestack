@@ -1,0 +1,20 @@
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
+  images: {
+    domains: ['i.imgur.com'], // For any external images
+  },
+  // Enable static exports for better performance
+  output: 'standalone',
+}
+
+module.exports = nextConfig
