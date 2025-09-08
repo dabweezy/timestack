@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import { motion } from 'framer-motion'
 import { 
   HomeIcon, 
@@ -31,6 +31,7 @@ interface SidebarProps {
 
 export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProps) {
   const { currentPage, sidebarCollapsed, setCurrentPage, toggleSidebar, setSidebarCollapsed } = useAppStore()
+  const [showStatusTooltip, setShowStatusTooltip] = useState(false)
 
   const handleNavClick = (page: NavigationPage) => {
     setCurrentPage(page)
@@ -139,8 +140,12 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
       </nav>
 
       {/* System Status */}
-      <div className="p-4 border-t border-blue-500/30">
-        <div className="flex items-center space-x-3">
+      <div className="p-4 border-t border-blue-500/30 relative">
+        <div 
+          className="flex items-center space-x-3 cursor-help"
+          onMouseEnter={() => setShowStatusTooltip(true)}
+          onMouseLeave={() => setShowStatusTooltip(false)}
+        >
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
           {!sidebarCollapsed && (
             <motion.div
@@ -152,6 +157,40 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
             </motion.div>
           )}
         </div>
+
+        {/* Status Tooltip */}
+        {showStatusTooltip && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className={clsx(
+              'absolute bottom-full mb-2 p-3 bg-blue-800 rounded-lg shadow-lg border border-blue-600 z-50',
+              sidebarCollapsed ? 'left-full ml-2' : 'left-0'
+            )}
+          >
+            <div className="text-xs text-white space-y-2 whitespace-nowrap">
+              <div className="font-medium text-blue-100 mb-2">System Status Colors:</div>
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full" />
+                <span>Online - All systems operational</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-orange-400 rounded-full" />
+                <span>Under Maintenance - Limited functionality</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-red-400 rounded-full" />
+                <span>System Down - Service unavailable</span>
+              </div>
+            </div>
+            {/* Tooltip arrow */}
+            <div className={clsx(
+              'absolute w-2 h-2 bg-blue-800 border-r border-b border-blue-600 rotate-45',
+              sidebarCollapsed ? 'left-0 top-1/2 -translate-y-1/2 -translate-x-1' : 'bottom-0 left-4 translate-y-1'
+            )} />
+          </motion.div>
+        )}
       </div>
     </motion.div>
   )
