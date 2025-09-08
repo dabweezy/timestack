@@ -12,6 +12,18 @@ module.exports = {
         'guaruja': ['"Guaruja Grotesk"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
       },
       colors: {
+        blue: {
+          50: '#eff6ff',
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',
+          500: '#4d73ff',
+          600: '#003CFF',
+          700: '#002eb8',
+          800: '#001f80',
+          900: '#00154d',
+        },
         apple: {
           blue: '#007aff',
           lightblue: '#5ac8fa',
