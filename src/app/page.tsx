@@ -14,7 +14,7 @@ const pageComponents = {
   stock: StockPage,
   sales: SalesPage,
   orders: OrdersPage,
-  profile: DashboardPage, // 🚀 Fresh Vercel project deployment test
+  profile: DashboardPage, // ✅ Pro plan deployment - bottom gap & scroll fixes
 }
 
 export default function Home() {
