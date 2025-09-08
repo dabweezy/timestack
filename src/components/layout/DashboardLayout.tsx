@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }, [initializeSampleData])
 
   return (
-    <div className="h-screen flex overflow-hidden bg-blue-600 p-1.5">
+    <div className="h-screen flex bg-blue-600 p-1.5">
       {/* Desktop Sidebar */}
       <div className="hidden lg:flex">
         <Sidebar />
@@ -81,7 +81,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <motion.div 
           className="flex-1 flex flex-col transition-all duration-300 ease-in-out"
         >
-          <div className="flex-1 bg-white lg:rounded-4xl shadow-timestack relative flex flex-col">
+          <div className="flex-1 bg-white lg:rounded-4xl shadow-timestack relative flex flex-col min-h-0">
             {/* Header */}
             <Header onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)} />
             
