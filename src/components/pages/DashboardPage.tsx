@@ -56,6 +56,13 @@ const statsConfig = [
 
 export default function DashboardPage() {
   const { orders, customers, watchProducts, setCurrentPage } = useAppStore()
+  
+  const getGreeting = () => {
+    const hour = new Date().getHours()
+    if (hour < 12) return 'Good morning'
+    if (hour < 17) return 'Good afternoon'
+    return 'Good evening'
+  }
 
   const recentOrders = orders
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -67,10 +74,21 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* Test Message */}
-      <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
-        🚀 <strong>Live Update Test!</strong> This message was added at 8:05 PM to test the deployment workflow.
-      </div>
+      {/* Greeting Message */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl px-6 py-4"
+      >
+        <div className="flex items-center space-x-3">
+          <div className="text-2xl">👋</div>
+          <div>
+            <h2 className="text-xl font-semibold text-blue-900">{getGreeting()}!</h2>
+            <p className="text-blue-700 text-sm">Welcome back to your Timestack dashboard</p>
+          </div>
+        </div>
+      </motion.div>
       
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
