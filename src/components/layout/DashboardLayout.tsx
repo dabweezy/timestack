@@ -85,9 +85,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           )}
         >
           <div className="flex-1 bg-white lg:rounded-4xl shadow-timestack overflow-hidden relative">
-            {/* Blue accent line */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-apple-blue via-apple-lightblue to-apple-green" />
-            
             {/* Header */}
             <Header onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)} />
             
