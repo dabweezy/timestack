@@ -14,7 +14,7 @@ const pageComponents = {
   stock: StockPage,
   sales: SalesPage,
   orders: OrdersPage,
-  profile: DashboardPage, // 🎨 Blue theme deployment test - Updated at 8:15 PM
+  profile: DashboardPage, // 🚨 URGENT: Vercel deployment issue - Blue theme not updating - 8:25 PM
 }
 
 export default function Home() {
