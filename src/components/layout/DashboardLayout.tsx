@@ -81,7 +81,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <motion.div 
           className="flex-1 flex flex-col transition-all duration-300 ease-in-out"
         >
-          <div className="flex-1 bg-white lg:rounded-4xl shadow-timestack overflow-hidden relative flex flex-col min-h-0">
+          <div className="flex-1 bg-white rounded-4xl shadow-timestack overflow-hidden relative flex flex-col min-h-0">
             {/* Header */}
             <Header onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)} />
             
