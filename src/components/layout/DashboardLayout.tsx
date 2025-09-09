@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, XMarkIcon, ChevronLeftIcon } from '@heroicons/react/24/outline'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import ModalManager from '../modals/ModalManager'
@@ -102,6 +102,25 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       
       {/* Modal Manager */}
       <ModalManager />
+
+      {/* Sidebar Toggle Button - Positioned outside all containers */}
+      <div className="fixed left-[260px] top-1/2 -translate-y-1/2 z-[9999] transition-all duration-300" 
+           style={{left: sidebarCollapsed ? '57px' : '247px'}}>
+        <div className="w-10 h-10 bg-white rounded-full shadow-xl flex items-center justify-center">
+          <button
+            onClick={() => useAppStore.getState().toggleSidebar()}
+            className="w-8 h-8 bg-blue-600 rounded-full shadow-lg border-2 border-white flex items-center justify-center hover:shadow-xl hover:bg-blue-700 transition-all duration-300 group"
+          >
+            <ChevronLeftIcon 
+              className={clsx(
+                'w-4 h-4 text-white transition-transform duration-300',
+                sidebarCollapsed ? 'rotate-180' : 'rotate-0'
+              )} 
+            />
+            <div className="absolute inset-0 bg-blue-800 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+          </button>
+        </div>
+      </div>
     </div>
   )
 }

@@ -52,58 +52,26 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
       )}
     >
       {/* TIMESTACK Logo Header */}
-      <div className="p-4 border-b border-blue-500/30 relative">
+      <div className="p-3 border-b border-blue-500/30 flex justify-center">
+        {/* Logo container with minimal animated border */}
         <div className="relative">
-          {/* Card Background with Glow Effect */}
-          <div className="relative bg-card rounded-lg shadow-lg border border-white/20 backdrop-blur-sm overflow-hidden">
-            {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 via-blue-500/60 to-purple-600/80" />
-            
-            {/* Animated Border Glow */}
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400 opacity-50 blur-sm animate-pulse" />
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500/30 via-purple-600/30 to-blue-500/30 animate-ping" />
-            
-            {/* Logo Content */}
-            <div className="relative px-4 py-3 flex items-center space-x-3">
-              {/* Logo Icon - Timestack Symbol */}
-              <div className="flex items-center justify-center">
-                <div className="relative">
-                  {/* Main Clock Icon */}
-                  <ClockIcon className="w-8 h-8 text-white" />
-                  {/* Stack Effect */}
-                  <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-white/30 rounded-full border border-white/50" />
-                  <div className="absolute -bottom-0.5 -left-0.5 w-2 h-2 bg-white/20 rounded-full" />
-                </div>
-              </div>
-              
-              {/* TIMESTACK Text */}
-              <div 
-                className={clsx(
-                  'text-white transition-opacity duration-200',
-                  sidebarCollapsed ? 'opacity-0' : 'opacity-100'
-                )}
-              >
-                <div className="font-bold text-lg tracking-wide">TIMESTACK</div>
-                <div className="text-xs text-blue-100 opacity-90">Luxury Watch Inventory</div>
-              </div>
-            </div>
+          {/* Animated light trace border */}
+          <div className="absolute -inset-0.5 rounded-lg opacity-60"
+               style={{
+                 background: 'conic-gradient(from 0deg, transparent 0%, rgba(6, 182, 212, 0.6) 25%, rgba(255, 255, 255, 0.8) 50%, rgba(59, 130, 246, 0.6) 75%, transparent 100%)',
+                 animation: 'borderTrace 4s linear infinite'
+               }}>
+          </div>
+          
+          {/* Logo content - no background */}
+          <div className="relative px-2 py-1">
+            <img
+              src="https://i.ibb.co/C3Lttm0S/logv2.png"
+              alt="Timestack Logo"
+              className="w-auto h-auto max-w-[140px] max-h-[32px] object-contain block"
+            />
           </div>
         </div>
-        
-        {/* Collapse Toggle Button */}
-        {!isMobile && (
-          <button
-            onClick={handleToggleSidebar}
-            className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-white/10 text-blue-200 hover:text-white transition-colors z-10"
-          >
-            <ChevronLeftIcon 
-              className={clsx(
-                'w-4 h-4 transition-transform duration-300',
-                sidebarCollapsed ? 'rotate-180' : 'rotate-0'
-              )} 
-            />
-          </button>
-        )}
       </div>
 
       {/* Navigation */}
@@ -186,6 +154,7 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
           </div>
         )}
       </div>
+
     </div>
   )
 }

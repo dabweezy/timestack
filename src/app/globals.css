@@ -71,6 +71,16 @@ body {
   --slug-length: 80;
 }
 
+/* Border trace animation */
+@keyframes borderTrace {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
