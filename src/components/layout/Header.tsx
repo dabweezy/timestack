@@ -26,26 +26,38 @@ export default function Header({ onMobileMenuToggle }: HeaderProps) {
   return (
     <header className="bg-white border-b border-gray-200 px-6 lg:px-8 py-4">
       <div className="flex items-center justify-between">
-        {/* Page Title */}
+        {/* TIMESTACK Logo with Light Trace */}
         <div className="flex-1">
-          <motion.h1 
-            key={currentPage}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-            className="text-2xl font-sf-pro font-bold text-timestack-dark"
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="relative inline-block"
           >
-            {currentPageName}
-          </motion.h1>
-          <motion.p 
-            key={`${currentPage}-subtitle`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            className="text-sm text-timestack-gray mt-1"
-          >
-            {getPageSubtitle(currentPage)}
-          </motion.p>
+            {/* Light Trace Effect */}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400 opacity-75 blur-sm animate-pulse"></div>
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500 via-purple-600 to-blue-500 opacity-50 animate-ping"></div>
+            
+            {/* Logo Card */}
+            <div className="relative bg-gradient-to-r from-blue-600 to-blue-700 rounded-2xl px-6 py-3 shadow-lg">
+              <div className="flex items-center space-x-3">
+                {/* Logo Icon - 4 circles */}
+                <div className="flex items-center space-x-1">
+                  {/* Three solid circles in triangle formation */}
+                  <div className="w-3 h-3 bg-white rounded-full"></div>
+                  <div className="w-3 h-3 bg-white rounded-full"></div>
+                  <div className="w-3 h-3 bg-white rounded-full -ml-1.5 -mt-1"></div>
+                  {/* Hollow circle */}
+                  <div className="w-3 h-3 border-2 border-white rounded-full -ml-1.5 -mt-1"></div>
+                </div>
+                
+                {/* TIMESTACK Text */}
+                <span className="text-white font-bold text-xl tracking-wide">
+                  TIMESTACK
+                </span>
+              </div>
+            </div>
+          </motion.div>
         </div>
 
         {/* Header Actions */}

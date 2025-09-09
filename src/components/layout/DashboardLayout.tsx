@@ -57,7 +57,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </AnimatePresence>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-0">
         {/* Mobile Header */}
         <div className="lg:hidden flex items-center justify-between p-4 bg-blue-600 backdrop-blur-xl border-b border-blue-500/30">
           <button
@@ -79,14 +79,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
         {/* Main Content Container */}
         <motion.div 
-          className="flex-1 flex flex-col transition-all duration-300 ease-in-out"
+          className="flex-1 flex flex-col min-h-0 transition-all duration-300 ease-in-out"
         >
           <div className="flex-1 bg-white rounded-4xl shadow-timestack overflow-hidden relative flex flex-col min-h-0">
             {/* Header */}
             <Header onMobileMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)} />
             
             {/* Content */}
-            <main className="flex-1 overflow-y-auto overflow-x-hidden p-6 lg:p-8 h-0">
+            <main className="flex-1 overflow-y-auto overflow-x-hidden p-6 lg:p-8 min-h-0">
               <motion.div
                 key={useAppStore.getState().currentPage}
                 initial={{ opacity: 0, y: 20 }}
