@@ -1,7 +1,6 @@
 'use client'
 
-import { Fragment, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useState } from 'react'
 import { 
   HomeIcon, 
   UsersIcon, 
@@ -9,8 +8,7 @@ import {
   ChartBarIcon, 
   ShoppingCartIcon,
   ChevronLeftIcon,
-  Bars3Icon,
-  WifiIcon
+  ClockIcon
 } from '@heroicons/react/24/outline'
 import useAppStore from '@/store/useAppStore'
 import type { NavigationPage } from '@/types'
@@ -30,7 +28,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProps) {
-  const { currentPage, sidebarCollapsed, setCurrentPage, toggleSidebar, setSidebarCollapsed } = useAppStore()
+  const { currentPage, sidebarCollapsed, setCurrentPage, toggleSidebar } = useAppStore()
   const [showStatusTooltip, setShowStatusTooltip] = useState(false)
 
   const handleNavClick = (page: NavigationPage) => {
@@ -45,67 +43,65 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
   }
 
   return (
-    <motion.div
-      initial={false}
-      animate={{
-        width: sidebarCollapsed ? 70 : 260,
-        transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] }
-      }}
+    <div
       className={clsx(
-        'flex flex-col h-full bg-blue-600',
+        'flex flex-col h-full bg-blue-600 transition-all duration-300',
         'border-r border-blue-500/30 backdrop-blur-xl',
-        isMobile && 'fixed inset-y-0 left-0 z-50 w-64'
+        isMobile && 'fixed inset-y-0 left-0 z-50 w-64',
+        sidebarCollapsed ? 'w-[70px]' : 'w-[260px]'
       )}
     >
       {/* TIMESTACK Logo Header */}
-      <div className="p-4 border-b border-blue-500/30">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative"
-        >
-          {/* Light Trace Effect */}
-          <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400 opacity-75 blur-sm animate-pulse"></div>
-          <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500 via-purple-600 to-blue-500 opacity-50 animate-ping"></div>
-          
-          {/* Logo Card */}
-          <div className="relative bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl px-4 py-3 shadow-lg">
-            <div className="flex items-center space-x-3">
-              {/* Logo Icon - 4 circles */}
-              <div className="flex items-center space-x-1">
-                {/* Three solid circles in triangle formation */}
-                <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
-                <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
-                <div className="w-2.5 h-2.5 bg-white rounded-full -ml-1 -mt-1"></div>
-                {/* Hollow circle */}
-                <div className="w-2.5 h-2.5 border-2 border-white rounded-full -ml-1 -mt-1"></div>
+      <div className="p-4 border-b border-blue-500/30 relative">
+        <div className="relative">
+          {/* Card Background with Glow Effect */}
+          <div className="relative bg-card rounded-lg shadow-lg border border-white/20 backdrop-blur-sm overflow-hidden">
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 via-blue-500/60 to-purple-600/80" />
+            
+            {/* Animated Border Glow */}
+            <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400 opacity-50 blur-sm animate-pulse" />
+            <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500/30 via-purple-600/30 to-blue-500/30 animate-ping" />
+            
+            {/* Logo Content */}
+            <div className="relative px-4 py-3 flex items-center space-x-3">
+              {/* Logo Icon - Timestack Symbol */}
+              <div className="flex items-center justify-center">
+                <div className="relative">
+                  {/* Main Clock Icon */}
+                  <ClockIcon className="w-8 h-8 text-white" />
+                  {/* Stack Effect */}
+                  <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-white/30 rounded-full border border-white/50" />
+                  <div className="absolute -bottom-0.5 -left-0.5 w-2 h-2 bg-white/20 rounded-full" />
+                </div>
               </div>
               
               {/* TIMESTACK Text */}
-              <motion.span 
-                animate={{ opacity: sidebarCollapsed ? 0 : 1 }}
-                transition={{ duration: 0.2 }}
-                className="text-white font-bold text-lg tracking-wide"
+              <div 
+                className={clsx(
+                  'text-white transition-opacity duration-200',
+                  sidebarCollapsed ? 'opacity-0' : 'opacity-100'
+                )}
               >
-                TIMESTACK
-              </motion.span>
+                <div className="font-bold text-lg tracking-wide">TIMESTACK</div>
+                <div className="text-xs text-blue-100 opacity-90">Luxury Watch Inventory</div>
+              </div>
             </div>
           </div>
-        </motion.div>
-      </div>
+        </div>
         
+        {/* Collapse Toggle Button */}
         {!isMobile && (
           <button
             onClick={handleToggleSidebar}
-            className="p-1.5 rounded-lg hover:bg-white/10 text-blue-200 hover:text-white transition-colors"
+            className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-white/10 text-blue-200 hover:text-white transition-colors z-10"
           >
-            <motion.div
-              animate={{ rotate: sidebarCollapsed ? 180 : 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <ChevronLeftIcon className="w-4 h-4" />
-            </motion.div>
+            <ChevronLeftIcon 
+              className={clsx(
+                'w-4 h-4 transition-transform duration-300',
+                sidebarCollapsed ? 'rotate-180' : 'rotate-0'
+              )} 
+            />
           </button>
         )}
       </div>
@@ -115,11 +111,9 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
         {navigation.map((item) => {
           const isActive = currentPage === item.page
           return (
-            <motion.button
+            <button
               key={item.name}
               onClick={() => handleNavClick(item.page)}
-              whileHover={{ x: 2 }}
-              whileTap={{ scale: 0.98 }}
               className={clsx(
                 'w-full flex items-center px-3 py-2.5 rounded-xl font-medium text-sm transition-all duration-200 relative group',
                 isActive
@@ -127,25 +121,12 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
                   : 'text-blue-100 hover:bg-white/10 hover:text-white'
               )}
             >
-              {isActive && (
-                <motion.div
-                  layoutId="activeIndicator"
-                  className="absolute inset-0 bg-white/10 rounded-xl border border-white/20"
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
-              )}
-              
-              <item.icon className="w-5 h-5 flex-shrink-0 z-10" />
+              <item.icon className="w-5 h-5 flex-shrink-0" />
               
               {!sidebarCollapsed && (
-                <motion.span
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="ml-3 z-10 font-guaruja"
-                >
+                <span className="ml-3 font-guaruja">
                   {item.name}
-                </motion.span>
+                </span>
               )}
 
               {sidebarCollapsed && (
@@ -154,7 +135,7 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1 w-2 h-2 bg-blue-800 border-l border-t border-blue-600 rotate-45" />
                 </div>
               )}
-            </motion.button>
+            </button>
           )
         })}
       </nav>
@@ -168,22 +149,15 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
         >
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
           {!sidebarCollapsed && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-xs text-blue-200"
-            >
+            <div className="text-xs text-blue-200">
               System Online
-            </motion.div>
+            </div>
           )}
         </div>
 
         {/* Status Tooltip */}
         {showStatusTooltip && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
+          <div
             className={clsx(
               'absolute bottom-full mb-2 p-3 bg-blue-800 rounded-lg shadow-lg border border-blue-600 z-50',
               sidebarCollapsed ? 'left-full ml-2' : 'left-0'
@@ -209,9 +183,9 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
               'absolute w-2 h-2 bg-blue-800 border-r border-b border-blue-600 rotate-45',
               sidebarCollapsed ? 'left-0 top-1/2 -translate-y-1/2 -translate-x-1' : 'bottom-0 left-4 translate-y-1'
             )} />
-          </motion.div>
+          </div>
         )}
       </div>
-    </motion.div>
+    </div>
   )
 }
