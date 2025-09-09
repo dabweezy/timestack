@@ -19,17 +19,17 @@ import clsx from 'clsx'
 import type { Order } from '@/types'
 
 const statusColors = {
-  'Pending': 'bg-yellow-100 text-yellow-800',
-  'Processing': 'bg-blue-100 text-blue-800',
-  'Completed': 'bg-green-100 text-green-800',
-  'Cancelled': 'bg-red-100 text-red-800'
+  'pending': 'bg-yellow-100 text-yellow-800',
+  'processing': 'bg-blue-100 text-blue-800',
+  'completed': 'bg-green-100 text-green-800',
+  'cancelled': 'bg-red-100 text-red-800'
 }
 
 const statusIcons = {
-  'Pending': ClockIcon,
-  'Processing': ArrowUpIcon,
-  'Completed': CheckCircleIcon,
-  'Cancelled': XCircleIcon
+  'pending': ClockIcon,
+  'processing': ArrowUpIcon,
+  'completed': CheckCircleIcon,
+  'cancelled': XCircleIcon
 }
 
 export default function OrdersPage() {
@@ -41,7 +41,7 @@ export default function OrdersPage() {
   const filteredOrders = orders.filter(order => {
     const matchesSearch = 
       order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      `${order.customer.firstName} ${order.customer.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.watch.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.watch.model.toLowerCase().includes(searchQuery.toLowerCase())
     
@@ -52,14 +52,14 @@ export default function OrdersPage() {
   })
 
   const sortedOrders = filteredOrders.sort((a, b) => 
-    new Date(b.date + ' ' + b.time).getTime() - new Date(a.date + ' ' + a.time).getTime()
+    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   )
 
   const orderStats = {
     total: orders.length,
-    pending: orders.filter(o => o.status === 'Pending').length,
-    processing: orders.filter(o => o.status === 'Processing').length,
-    completed: orders.filter(o => o.status === 'Completed').length,
+    pending: orders.filter(o => o.status === 'pending').length,
+    processing: orders.filter(o => o.status === 'processing').length,
+    completed: orders.filter(o => o.status === 'completed').length,
     sales: orders.filter(o => o.orderType === 'sale').length,
     purchases: orders.filter(o => o.orderType === 'purchase').length
   }
@@ -160,10 +160,10 @@ export default function OrdersPage() {
             className="form-input w-full sm:w-48"
           >
             <option value="">All Statuses</option>
-            <option value="Pending">Pending</option>
-            <option value="Processing">Processing</option>
-            <option value="Completed">Completed</option>
-            <option value="Cancelled">Cancelled</option>
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
           </select>
           
           <select 
@@ -240,11 +240,11 @@ export default function OrdersPage() {
                             statusColors[order.status]
                           )}>
                             <StatusIcon className="w-3 h-3 mr-1" />
-                            {order.status}
+                            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                           </span>
                         </div>
                         <div className="text-sm text-gray-500 mt-1">
-                          <span className="font-medium">{order.customer.name}</span> • 
+                          <span className="font-medium">{order.customer.firstName} {order.customer.lastName}</span> • 
                           <span className="ml-1">{order.watch.brand} {order.watch.model}</span>
                         </div>
                       </div>
@@ -253,10 +253,10 @@ export default function OrdersPage() {
                     <div className="flex items-center space-x-6">
                       <div className="text-right">
                         <div className="font-semibold text-gray-900">
-                          {order.pricing.salePrice || order.pricing.costPrice}
+                          {formatCurrency(order.salePrice)}
                         </div>
                         <div className="text-xs text-gray-500">
-                          {formatDate(order.date)} • {order.time}
+                          {formatDate(order.timestamp)}
                         </div>
                       </div>
                       
@@ -274,19 +274,12 @@ export default function OrdersPage() {
                     </div>
                   </div>
                   
-                  {order.payment.status !== 'Paid' && (
-                    <div className="mt-3 flex items-center text-sm">
-                      <div className={clsx(
-                        'w-2 h-2 rounded-full mr-2',
-                        order.payment.status === 'Pending' ? 'bg-yellow-400' :
-                        order.payment.status === 'Partial' ? 'bg-orange-400' :
-                        'bg-red-400'
-                      )} />
-                      <span className="text-gray-600">
-                        Payment: {order.payment.status}
-                      </span>
-                    </div>
-                  )}
+                  <div className="mt-3 flex items-center text-sm">
+                    <div className="w-2 h-2 rounded-full mr-2 bg-green-400" />
+                    <span className="text-gray-600">
+                      Payment Method: {order.paymentMethod.replace('_', ' ').toUpperCase()}
+                    </span>
+                  </div>
                 </motion.div>
               )
             })}

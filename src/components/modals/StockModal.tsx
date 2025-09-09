@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ClockIcon, CurrencyDollarIcon, TagIcon } from '@heroicons/react/24/outline'
+import { ClockIcon, CurrencyDollarIcon, TagIcon, UserIcon, MagnifyingGlassIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import BaseModal from './BaseModal'
 import useAppStore from '@/store/useAppStore'
 import { generateId } from '@/utils/format'
@@ -33,9 +33,10 @@ const sets = [
 ]
 
 export default function StockModal() {
-  const { modals, closeModal, addWatchProduct, updateWatchProduct } = useAppStore()
+  const { modals, closeModal, addWatchProduct, updateWatchProduct, customers } = useAppStore()
   const isEditing = modals.data?.id
   const product = modals.data as WatchProduct
+  
 
   const [formData, setFormData] = useState<StockForm>({
     brand: '',
@@ -47,13 +48,18 @@ export default function StockModal() {
     condition: '',
     yearManufactured: new Date().getFullYear().toString(),
     set: '',
-    tradePrice: '',
-    retailPrice: '',
+    costPrice: '',
+    stockType: 'stock',
     description: ''
   })
 
   const [errors, setErrors] = useState<Partial<StockForm>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  // Customer assignment state
+  const [customerSearchQuery, setCustomerSearchQuery] = useState('')
+  const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null)
+  const [assignedCustomer, setAssignedCustomer] = useState<string | null>(null)
 
   useEffect(() => {
     if (isEditing && product) {
@@ -67,10 +73,11 @@ export default function StockModal() {
         condition: product.condition || '',
         yearManufactured: product.yearManufactured ? product.yearManufactured.toString() : '',
         set: product.set || '',
-        tradePrice: product.tradePrice ? product.tradePrice.toString() : '',
-        retailPrice: product.retailPrice ? product.retailPrice.toString() : '',
+        costPrice: product.costPrice ? product.costPrice.toString() : '',
+        stockType: product.condition === 'Very Good' ? 'consignment' : 'stock',
         description: product.description || ''
       })
+      setAssignedCustomer(product.assignedCustomer || null)
     }
   }, [isEditing, product])
 
@@ -100,14 +107,11 @@ export default function StockModal() {
       }
     }
     if (!formData.set) newErrors.set = 'Set information is required'
-    if (!formData.tradePrice.trim()) newErrors.tradePrice = 'Trade price is required'
-    else if (isNaN(parseFloat(formData.tradePrice)) || parseFloat(formData.tradePrice) <= 0) {
-      newErrors.tradePrice = 'Please enter a valid price'
+    if (!formData.costPrice.trim()) newErrors.costPrice = 'Cost price is required'
+    else if (isNaN(parseFloat(formData.costPrice)) || parseFloat(formData.costPrice) <= 0) {
+      newErrors.costPrice = 'Please enter a valid price'
     }
-    if (!formData.retailPrice.trim()) newErrors.retailPrice = 'Retail price is required'
-    else if (isNaN(parseFloat(formData.retailPrice)) || parseFloat(formData.retailPrice) <= 0) {
-      newErrors.retailPrice = 'Please enter a valid price'
-    }
+    if (!formData.stockType) newErrors.stockType = 'Stock type is required'
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -132,10 +136,13 @@ export default function StockModal() {
         condition: formData.condition as WatchProduct['condition'],
         yearManufactured: parseInt(formData.yearManufactured),
         set: formData.set,
-        tradePrice: parseFloat(formData.tradePrice),
-        retailPrice: parseFloat(formData.retailPrice),
+        costPrice: parseFloat(formData.costPrice),
+        tradePrice: parseFloat(formData.costPrice), // Keep for backward compatibility
+        retailPrice: parseFloat(formData.costPrice) * 1.5, // Auto-calculate retail as 1.5x cost
         description: formData.description?.trim(),
-        dateAdded: isEditing ? product.dateAdded : new Date().toISOString()
+        dateAdded: isEditing ? product.dateAdded : new Date().toISOString(),
+        status: formData.stockType === 'consignment' ? 'consignment' : 'available',
+        assignedCustomer: assignedCustomer || undefined
       }
 
       if (isEditing) {
@@ -151,6 +158,33 @@ export default function StockModal() {
       setIsSubmitting(false)
     }
   }
+
+  // Customer assignment functions
+  const filteredCustomers = customers.filter(customer =>
+    customer.firstName.toLowerCase().includes(customerSearchQuery.toLowerCase()) ||
+    customer.lastName.toLowerCase().includes(customerSearchQuery.toLowerCase()) ||
+    customer.email.toLowerCase().includes(customerSearchQuery.toLowerCase())
+  )
+
+  const handleCustomerSelect = (customerId: string) => {
+    setSelectedCustomer(customerId)
+  }
+
+  const handleSaveAssignment = () => {
+    if (selectedCustomer) {
+      setAssignedCustomer(selectedCustomer)
+      setSelectedCustomer(null)
+      setCustomerSearchQuery('')
+    }
+  }
+
+  const handleReassign = () => {
+    setAssignedCustomer(null)
+    setSelectedCustomer(null)
+    setCustomerSearchQuery('')
+  }
+
+  const assignedCustomerData = assignedCustomer ? customers.find(c => c.id === assignedCustomer) : null
 
   if (modals.type !== 'stock') return null
 
@@ -337,56 +371,56 @@ export default function StockModal() {
           </div>
         </div>
 
-        {/* Pricing Information */}
+        {/* Pricing and Stock Information */}
         <div>
           <h3 className="flex items-center text-lg font-medium text-gray-900 mb-4">
             <CurrencyDollarIcon className="w-5 h-5 mr-2 text-apple-blue" />
-            Pricing Information
+            Purchase Information
           </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Trade Price (£) *
+                Cost Price (£) *
               </label>
               <input
                 type="number"
-                value={formData.tradePrice}
-                onChange={handleInputChange('tradePrice')}
-                className={`form-input w-full ${errors.tradePrice ? 'border-red-300' : ''}`}
+                value={formData.costPrice}
+                onChange={handleInputChange('costPrice')}
+                className={`form-input w-full ${errors.costPrice ? 'border-red-300' : ''}`}
                 placeholder="0.00"
                 step="0.01"
                 min="0"
               />
-              {errors.tradePrice && (
-                <p className="mt-1 text-sm text-red-600">{errors.tradePrice}</p>
+              {errors.costPrice && (
+                <p className="mt-1 text-sm text-red-600">{errors.costPrice}</p>
               )}
             </div>
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Retail Price (£) *
+                Stock Type *
               </label>
-              <input
-                type="number"
-                value={formData.retailPrice}
-                onChange={handleInputChange('retailPrice')}
-                className={`form-input w-full ${errors.retailPrice ? 'border-red-300' : ''}`}
-                placeholder="0.00"
-                step="0.01"
-                min="0"
-              />
-              {errors.retailPrice && (
-                <p className="mt-1 text-sm text-red-600">{errors.retailPrice}</p>
+              <select
+                value={formData.stockType}
+                onChange={handleInputChange('stockType')}
+                className={`form-select w-full ${errors.stockType ? 'border-red-300' : ''}`}
+              >
+                <option value="stock">Stock</option>
+                <option value="consignment">Consignment</option>
+              </select>
+              {errors.stockType && (
+                <p className="mt-1 text-sm text-red-600">{errors.stockType}</p>
               )}
             </div>
           </div>
           
-          {formData.tradePrice && formData.retailPrice && (
+          {formData.costPrice && (
             <div className="mt-4 p-3 bg-gray-50 rounded-lg">
               <div className="text-sm text-gray-600">
-                Margin: £{(parseFloat(formData.retailPrice) - parseFloat(formData.tradePrice)).toFixed(2)} 
-                ({(((parseFloat(formData.retailPrice) - parseFloat(formData.tradePrice)) / parseFloat(formData.retailPrice)) * 100).toFixed(1)}%)
+                <div>Cost Price: £{parseFloat(formData.costPrice).toFixed(2)}</div>
+                <div>Suggested Retail: £{(parseFloat(formData.costPrice) * 1.5).toFixed(2)} (1.5x markup)</div>
+                <div>Potential Margin: £{(parseFloat(formData.costPrice) * 0.5).toFixed(2)} (33.3%)</div>
               </div>
             </div>
           )}
@@ -404,6 +438,106 @@ export default function StockModal() {
             className="form-input w-full resize-none"
             placeholder="Enter additional details about this watch (optional)"
           />
+        </div>
+
+        {/* Customer Assignment */}
+        <div>
+          <h3 className="flex items-center text-lg font-medium text-gray-900 mb-4">
+            <UserIcon className="w-5 h-5 mr-2 text-apple-blue" />
+            Customer Assignment
+          </h3>
+          
+          {!assignedCustomer ? (
+            <div className="space-y-4">
+              {/* Customer Search */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Search Customer
+                </label>
+                <div className="relative">
+                  <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    value={customerSearchQuery}
+                    onChange={(e) => setCustomerSearchQuery(e.target.value)}
+                    className="form-input pl-10 w-full"
+                    placeholder="Search by name or email..."
+                  />
+                </div>
+              </div>
+
+              {/* Customer List */}
+              {customerSearchQuery && filteredCustomers.length > 0 && (
+                <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-lg">
+                  {filteredCustomers.map((customer) => (
+                    <div
+                      key={customer.id}
+                      onClick={() => handleCustomerSelect(customer.id)}
+                      className={`p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 ${
+                        selectedCustomer === customer.id ? 'bg-blue-50 border-blue-200' : ''
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {customer.firstName} {customer.lastName}
+                          </p>
+                          <p className="text-sm text-gray-500">{customer.email}</p>
+                        </div>
+                        {selectedCustomer === customer.id && (
+                          <CheckCircleIcon className="w-5 h-5 text-blue-600" />
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Selected Customer Card */}
+              {selectedCustomer && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-blue-900">
+                        {customers.find(c => c.id === selectedCustomer)?.firstName} {customers.find(c => c.id === selectedCustomer)?.lastName}
+                      </p>
+                      <p className="text-sm text-blue-700">
+                        {customers.find(c => c.id === selectedCustomer)?.email}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleSaveAssignment}
+                      className="btn btn-primary btn-sm"
+                    >
+                      Assign Customer
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Assigned Customer Display */
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-green-900">
+                    {assignedCustomerData?.firstName} {assignedCustomerData?.lastName}
+                  </p>
+                  <p className="text-sm text-green-700">
+                    {assignedCustomerData?.email}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleReassign}
+                  className="btn btn-secondary btn-sm"
+                >
+                  Reassign
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Form Actions */}

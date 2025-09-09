@@ -10,12 +10,14 @@ export interface WatchProduct {
   condition: 'New' | 'Excellent' | 'Very Good' | 'Good' | 'Fair'
   yearManufactured: number
   set: string
+  costPrice: number
   tradePrice: number
   retailPrice: number
   images?: string[]
   description?: string
   dateAdded: string
   assignedCustomer?: string // Customer ID who this product is assigned to
+  status?: 'available' | 'sold' | 'reserved' | 'consignment' // Product status
 }
 
 export interface Customer {
@@ -40,36 +42,14 @@ export interface Customer {
 export interface Order {
   orderNumber: string
   orderType: 'purchase' | 'sale'
+  customer: Customer
+  watch: WatchProduct
+  salePrice: number
+  paymentMethod: 'cash' | 'card' | 'bank_transfer'
+  status: 'pending' | 'processing' | 'completed' | 'cancelled'
   date: string
-  time: string
-  status: 'Pending' | 'Processing' | 'Completed' | 'Cancelled'
-  customer: {
-    name: string
-    email: string
-    phone: string
-    address: string
-  }
-  watch: {
-    brand: string
-    model: string
-    reference: string
-    serial?: string
-    material: string
-    dialColor: string
-    bracelet?: string
-    condition: string
-    yearManufactured: number
-  }
-  pricing: {
-    costPrice: string
-    salePrice?: string
-    margin?: string
-  }
-  payment: {
-    method: string
-    status: 'Pending' | 'Paid' | 'Partial' | 'Refunded'
-    reference: string
-  }
+  timestamp: string
+  notes?: string
 }
 
 // UI/State types
@@ -115,8 +95,8 @@ export interface StockForm {
   condition: string
   yearManufactured: string
   set: string
-  tradePrice: string
-  retailPrice: string
+  costPrice: string
+  stockType: 'stock' | 'consignment'
   description: string
 }
 

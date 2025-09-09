@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { 
   ClockIcon, 
   TagIcon, 
@@ -14,7 +14,8 @@ import {
   CheckCircleIcon,
   ExclamationTriangleIcon,
   MagnifyingGlassIcon,
-  PlusIcon
+  PlusIcon,
+  PencilIcon
 } from '@heroicons/react/24/outline'
 import BaseModal from './BaseModal'
 import useAppStore from '@/store/useAppStore'
@@ -34,10 +35,18 @@ export default function ProductDetailsModal() {
   const { modals, closeModal, orders, customers, openModal, updateWatchProduct } = useAppStore()
   const product = modals.data as WatchProduct
   const [customerSearchQuery, setCustomerSearchQuery] = useState('')
-  const [selectedCustomer, setSelectedCustomer] = useState<string | null>(product.assignedCustomer || null)
-  const [localAssignedCustomer, setLocalAssignedCustomer] = useState<string | null>(product.assignedCustomer || null)
+  const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null)
+  const [localAssignedCustomer, setLocalAssignedCustomer] = useState<string | null>(null)
 
   if (modals.type !== 'productDetails' || !product) return null
+
+  // Initialize state with product data after null check
+  React.useEffect(() => {
+    if (product) {
+      setSelectedCustomer(product.assignedCustomer || null)
+      setLocalAssignedCustomer(product.assignedCustomer || null)
+    }
+  }, [product])
 
   // Find orders related to this product
   const productOrders = orders.filter(order => 
@@ -119,19 +128,31 @@ export default function ProductDetailsModal() {
                 </div>
               </div>
               
-              {/* Status Badge */}
-              <div className="text-right">
-                {assignedCustomer ? (
-                  <div className="flex items-center space-x-2 text-green-600">
-                    <CheckCircleIcon className="w-5 h-5" />
-                    <span className="text-sm font-medium">Assigned</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center space-x-2 text-blue-600">
-                    <ExclamationTriangleIcon className="w-5 h-5" />
-                    <span className="text-sm font-medium">Available</span>
-                  </div>
-                )}
+              {/* Status Badge and Edit Button */}
+              <div className="flex flex-col items-end space-y-3">
+                {/* Status Badge */}
+                <div>
+                  {assignedCustomer ? (
+                    <div className="flex items-center space-x-2 text-green-600">
+                      <CheckCircleIcon className="w-5 h-5" />
+                      <span className="text-sm font-medium">Assigned</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center space-x-2 text-blue-600">
+                      <ExclamationTriangleIcon className="w-5 h-5" />
+                      <span className="text-sm font-medium">Available</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Edit Button */}
+                <button
+                  onClick={() => openModal('stock', product)}
+                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
+                >
+                  <PencilIcon className="w-4 h-4" />
+                  <span>Edit Product</span>
+                </button>
               </div>
             </div>
           </div>
@@ -304,13 +325,13 @@ export default function ProductDetailsModal() {
                           {order.orderType === 'sale' ? 'Sale' : 'Purchase'} - {order.orderNumber}
                         </p>
                         <p className="text-sm text-gray-500">
-                          {order.customer.name} • {formatDate(order.date)}
+                          {order.customer.firstName} {order.customer.lastName} • {formatDate(order.timestamp)}
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="font-medium text-gray-900">
-                        {order.pricing.salePrice || order.pricing.costPrice}
+                        {order.salePrice || 'N/A'}
                       </p>
                       <p className="text-sm text-gray-500">
                         {order.status}

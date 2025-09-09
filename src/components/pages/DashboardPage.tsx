@@ -183,12 +183,12 @@ export default function DashboardPage() {
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">{order.orderNumber}</p>
-                          <p className="text-sm text-gray-500">{order.customer.name}</p>
+                          <p className="text-sm text-gray-500">{order.customer.firstName} {order.customer.lastName}</p>
                         </div>
                       </div>
                       <div className="text-right">
                         <p className="font-semibold text-gray-900">
-                          {order.pricing.salePrice || order.pricing.costPrice}
+                          {order.salePrice || 'N/A'}
                         </p>
                         <p className="text-sm text-gray-500">{order.date}</p>
                       </div>

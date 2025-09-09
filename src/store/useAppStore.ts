@@ -88,7 +88,7 @@ const useAppStore = create<AppState>()(
 
       // Watch product actions
       addWatchProduct: (product) => set((state) => ({
-        watchProducts: [...state.watchProducts, product]
+        watchProducts: [product, ...state.watchProducts] // Add at the top for chronological order
       })),
       
       updateWatchProduct: (id, updates) => set((state) => ({

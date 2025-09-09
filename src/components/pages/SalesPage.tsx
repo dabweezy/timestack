@@ -21,9 +21,10 @@ export default function SalesPage() {
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
 
   const availableProducts = watchProducts.filter(product =>
-    product.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (product.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.model.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.reference.toLowerCase().includes(searchQuery.toLowerCase())
+    product.reference.toLowerCase().includes(searchQuery.toLowerCase())) &&
+    product.status !== 'sold'
   )
 
   const handleProductSelect = (productId: string) => {
@@ -38,10 +39,7 @@ export default function SalesPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Sales Management</h2>
-          <p className="text-gray-600">Process sales and manage transactions</p>
-        </div>
+        <div></div>
       </div>
 
       {/* Quick Stats */}
