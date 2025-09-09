@@ -30,6 +30,7 @@ export interface Customer {
   country: string
   sortCode?: string
   accountNumber?: string
+  bankName?: string
   iban?: string
   swift?: string
   dateAdded: string
@@ -98,7 +99,7 @@ export interface SalesData {
 // Modal types
 export interface ModalState {
   isOpen: boolean
-  type: 'customer' | 'stock' | 'order' | 'sales' | 'product' | null
+  type: 'customer' | 'customerDetails' | 'stock' | 'order' | 'sales' | 'product' | null
   data?: any
 }
 
@@ -130,6 +131,7 @@ export interface CustomerForm {
   country: string
   sortCode: string
   accountNumber: string
+  bankName: string
   iban: string
   swift: string
 }

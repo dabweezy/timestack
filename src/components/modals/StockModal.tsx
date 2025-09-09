@@ -58,17 +58,17 @@ export default function StockModal() {
   useEffect(() => {
     if (isEditing && product) {
       setFormData({
-        brand: product.brand,
-        model: product.model,
-        reference: product.reference,
+        brand: product.brand || '',
+        model: product.model || '',
+        reference: product.reference || '',
         serial: product.serial || '',
-        material: product.material,
-        dialColor: product.dialColor,
-        condition: product.condition,
-        yearManufactured: product.yearManufactured.toString(),
-        set: product.set,
-        tradePrice: product.tradePrice.toString(),
-        retailPrice: product.retailPrice.toString(),
+        material: product.material || '',
+        dialColor: product.dialColor || '',
+        condition: product.condition || '',
+        yearManufactured: product.yearManufactured ? product.yearManufactured.toString() : '',
+        set: product.set || '',
+        tradePrice: product.tradePrice ? product.tradePrice.toString() : '',
+        retailPrice: product.retailPrice ? product.retailPrice.toString() : '',
         description: product.description || ''
       })
     }

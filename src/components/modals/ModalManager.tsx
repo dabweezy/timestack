@@ -2,6 +2,7 @@
 
 import useAppStore from '@/store/useAppStore'
 import CustomerModal from './CustomerModal'
+import CustomerDetailsModal from './CustomerDetailsModal'
 import StockModal from './StockModal'
 
 export default function ModalManager() {
@@ -12,6 +13,7 @@ export default function ModalManager() {
   return (
     <>
       <CustomerModal />
+      <CustomerDetailsModal />
       <StockModal />
       {/* Additional modals can be added here */}
     </>

@@ -91,7 +91,7 @@ export default function CustomersPage() {
               transition={{ delay: index * 0.1, duration: 0.3 }}
               whileHover={{ y: -4 }}
               className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all duration-200 cursor-pointer"
-              onClick={() => openModal('customer', customer)}
+              onClick={() => openModal('customerDetails', customer)}
             >
               <div className="flex items-center space-x-4 mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-apple-blue to-apple-purple rounded-xl flex items-center justify-center text-white font-semibold text-lg">

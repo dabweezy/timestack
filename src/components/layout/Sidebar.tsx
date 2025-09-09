@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import NeonBorder from '@/components/NeonBorder'
 import { 
   HomeIcon, 
   UsersIcon, 
@@ -52,26 +53,15 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
       )}
     >
       {/* TIMESTACK Logo Header */}
-      <div className="p-3 border-b border-blue-500/30 flex justify-center">
-        {/* Logo container with minimal animated border */}
-        <div className="relative">
-          {/* Animated light trace border */}
-          <div className="absolute -inset-0.5 rounded-lg opacity-60"
-               style={{
-                 background: 'conic-gradient(from 0deg, transparent 0%, rgba(6, 182, 212, 0.6) 25%, rgba(255, 255, 255, 0.8) 50%, rgba(59, 130, 246, 0.6) 75%, transparent 100%)',
-                 animation: 'borderTrace 4s linear infinite'
-               }}>
-          </div>
-          
-          {/* Logo content with border outline */}
-          <div className="relative p-0.5 border border-white/30 rounded-lg bg-white/5 backdrop-blur-sm">
-            <img
-              src="https://i.ibb.co/C3Lttm0S/logv2.png"
-              alt="Timestack Logo"
-              className="w-auto h-auto max-w-[140px] max-h-[32px] object-contain block"
-            />
-          </div>
-        </div>
+      <div className="p-4 border-b border-blue-500/30 flex justify-center">
+        {/* Logo with neon border effect */}
+        <NeonBorder duration={3}>
+          <img
+            src="https://i.ibb.co/C3Lttm0S/logv2.png"
+            alt="Timestack Logo"
+            className="w-auto h-auto max-w-[180px] max-h-[40px] object-contain block"
+          />
+        </NeonBorder>
       </div>
 
       {/* Navigation */}

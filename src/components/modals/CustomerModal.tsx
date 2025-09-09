@@ -25,6 +25,7 @@ export default function CustomerModal() {
     country: 'United Kingdom',
     sortCode: '',
     accountNumber: '',
+    bankName: '',
     iban: '',
     swift: ''
   })
@@ -46,6 +47,7 @@ export default function CustomerModal() {
         country: customer.country,
         sortCode: customer.sortCode || '',
         accountNumber: customer.accountNumber || '',
+        bankName: customer.bankName || '',
         iban: customer.iban || '',
         swift: customer.swift || ''
       })
@@ -98,6 +100,7 @@ export default function CustomerModal() {
         country: formData.country,
         sortCode: formData.sortCode?.trim(),
         accountNumber: formData.accountNumber?.trim(),
+        bankName: formData.bankName?.trim(),
         iban: formData.iban?.trim(),
         swift: formData.swift?.trim(),
         dateAdded: isEditing ? customer.dateAdded : new Date().toISOString()
@@ -306,6 +309,19 @@ export default function CustomerModal() {
           </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Bank Name
+              </label>
+              <input
+                type="text"
+                value={formData.bankName}
+                onChange={handleInputChange('bankName')}
+                className="form-input w-full"
+                placeholder="Enter bank name"
+              />
+            </div>
+            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Sort Code

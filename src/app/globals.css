@@ -75,10 +75,69 @@ body {
 @keyframes borderTrace {
   0% {
     transform: rotate(0deg);
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
   }
   100% {
     transform: rotate(360deg);
+    opacity: 0.6;
   }
+}
+
+/* Light trail animation - Tron-like effect */
+@keyframes lightTrail {
+  0% {
+    backgroundPosition: '-200% 0';
+  }
+  100% {
+    backgroundPosition: '200% 0';
+  }
+}
+
+/* White light trail animation */
+@keyframes whiteLightTrail {
+  0% {
+    boxShadow: '0 0 0 2px rgba(255,255,255,0.8), 0 0 10px rgba(255,255,255,0.4)';
+  }
+  50% {
+    boxShadow: '0 0 0 2px rgba(255,255,255,0.4), 0 0 20px rgba(255,255,255,0.8)';
+  }
+  100% {
+    boxShadow: '0 0 0 2px rgba(255,255,255,0.8), 0 0 10px rgba(255,255,255,0.4)';
+  }
+}
+
+/* CSS Custom Property for border angle */
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0turn;
+}
+
+/* Background spin animation */
+@keyframes bg-spin {
+  to {
+    --border-angle: 1turn;
+  }
+}
+
+/* Neon border theme */
+@theme inline {
+  --animate-neon-border: neon-border var(--neon-border-duration) linear infinite;
+  @keyframes neon-border {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.animate-neon-border {
+  animation: var(--animate-neon-border);
 }
 
 @layer base {
