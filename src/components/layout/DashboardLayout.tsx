@@ -6,6 +6,7 @@ import { Bars3Icon, XMarkIcon, ChevronLeftIcon } from '@heroicons/react/24/outli
 import Sidebar from './Sidebar'
 import Header from './Header'
 import ModalManager from '../modals/ModalManager'
+import BorderBeam from '@/components/BorderBeam'
 import useAppStore from '@/store/useAppStore'
 import clsx from 'clsx'
 
@@ -59,22 +60,28 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-h-0">
         {/* Mobile Header */}
-        <div className="lg:hidden flex items-center justify-between p-4 bg-blue-600 backdrop-blur-xl border-b border-blue-500/30">
+        <div className="lg:hidden flex items-center justify-center p-4 bg-blue-600 backdrop-blur-xl border-b border-blue-500/30 relative -ml-1">
           <button
             onClick={() => setMobileMenuOpen(true)}
-            className="p-2 rounded-lg text-white hover:bg-blue-700 transition-colors"
+            className="absolute left-4 p-2 rounded-lg text-white hover:bg-blue-700 transition-colors"
           >
             <Bars3Icon className="w-6 h-6" />
           </button>
           
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-apple-blue to-apple-purple rounded-lg flex items-center justify-center">
-              <span className="text-white text-sm font-bold">T</span>
+            <div className="relative w-8 h-8 bg-gradient-to-br from-apple-blue to-apple-purple rounded-lg flex items-center justify-center overflow-hidden">
+              <span className="text-white text-sm font-bold relative z-10">T</span>
+              <BorderBeam
+                size={50}
+                duration={5}
+                delay={3}
+                borderWidth={1.5}
+                colorFrom="#ffffff"
+                colorTo="#f8fafc"
+              />
             </div>
             <div className="text-white font-sf-pro font-semibold">Timestack</div>
           </div>
-          
-          <div className="w-10 h-10" /> {/* Spacer */}
         </div>
 
         {/* Main Content Container */}

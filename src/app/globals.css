@@ -140,6 +140,45 @@ body {
   animation: var(--animate-neon-border);
 }
 
+/* Border beam animation */
+.animate-border-beam::after {
+  animation: border-beam-anim var(--duration) infinite linear;
+}
+
+@keyframes border-beam-anim {
+  to {
+    offset-distance: 100%;
+  }
+}
+
+/* Clockwise border beam animation */
+.animate-border-beam-clockwise::after {
+  animation: border-beam-clockwise var(--duration) infinite linear;
+}
+
+@keyframes border-beam-clockwise {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+
+/* Clockwise border beam animation (reversed) */
+.animate-border-beam-clockwise-reverse::after {
+  animation: border-beam-clockwise-reverse var(--duration) infinite linear;
+}
+
+@keyframes border-beam-clockwise-reverse {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

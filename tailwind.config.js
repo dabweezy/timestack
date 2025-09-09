@@ -109,7 +109,8 @@ module.exports = {
   		},
   		animation: {
   			'fade-in': 'fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
-  			'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+  			'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+  			'border-beam': 'border-beam-anim var(--duration) infinite linear'
   		},
   		keyframes: {
   			fadeIn: {
@@ -130,6 +131,11 @@ module.exports = {
   				'100%': {
   					opacity: '1',
   					transform: 'translateY(0) scale(1)'
+  				}
+  			},
+  			'border-beam-anim': {
+  				'to': {
+  					'offset-distance': '100%'
   				}
   			}
   		}

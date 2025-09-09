@@ -39,6 +39,7 @@ export default function BaseModal({ children, title, size = 'lg' }: BaseModalPro
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.3 }}
+              onClick={(e) => e.stopPropagation()}
               className={`bg-white rounded-2xl shadow-2xl w-full ${sizeClasses[size]} max-h-[90vh] flex flex-col`}
             >
               {/* Header */}

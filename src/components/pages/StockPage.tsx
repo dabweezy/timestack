@@ -7,7 +7,9 @@ import {
   MagnifyingGlassIcon,
   CubeIcon,
   ClockIcon,
-  TagIcon
+  TagIcon,
+  Squares2X2Icon,
+  TableCellsIcon
 } from '@heroicons/react/24/outline'
 import useAppStore from '@/store/useAppStore'
 import { formatCurrency, formatDate } from '@/utils/format'
@@ -24,6 +26,7 @@ const conditionColors = {
 export default function StockPage() {
   const { watchProducts, openModal } = useAppStore()
   const [searchQuery, setSearchQuery] = useState('')
+  const [viewMode, setViewMode] = useState<'card' | 'table'>('card')
 
   const filteredProducts = watchProducts.filter(product =>
     product.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -41,15 +44,45 @@ export default function StockPage() {
           <p className="text-gray-600">Manage your luxury watch inventory</p>
         </div>
         
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => openModal('stock')}
-          className="btn btn-primary flex items-center space-x-2"
-        >
-          <PlusIcon className="w-5 h-5" />
-          <span>Add Product</span>
-        </motion.button>
+        <div className="flex items-center space-x-3">
+          {/* View Toggle */}
+          <div className="flex items-center bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('card')}
+              className={clsx(
+                'flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200',
+                viewMode === 'card'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              )}
+            >
+              <Squares2X2Icon className="w-4 h-4" />
+              <span>Cards</span>
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              className={clsx(
+                'flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200',
+                viewMode === 'table'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              )}
+            >
+              <TableCellsIcon className="w-4 h-4" />
+              <span>Table</span>
+            </button>
+          </div>
+          
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => openModal('stock')}
+            className="btn btn-primary flex items-center space-x-2"
+          >
+            <PlusIcon className="w-5 h-5" />
+            <span>Add Product</span>
+          </motion.button>
+        </div>
       </div>
 
       {/* Search and Filters */}
@@ -80,7 +113,7 @@ export default function StockPage() {
         </select>
       </div>
 
-      {/* Products Grid */}
+      {/* Products Display */}
       {filteredProducts.length === 0 ? (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -106,7 +139,7 @@ export default function StockPage() {
             </button>
           )}
         </motion.div>
-      ) : (
+      ) : viewMode === 'card' ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredProducts.map((product, index) => (
             <motion.div
@@ -116,7 +149,7 @@ export default function StockPage() {
               transition={{ delay: index * 0.1, duration: 0.3 }}
               whileHover={{ y: -4 }}
               className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200 cursor-pointer"
-              onClick={() => openModal('product', product)}
+              onClick={() => openModal('productDetails', product)}
             >
               {/* Product Image Placeholder */}
               <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
@@ -175,6 +208,95 @@ export default function StockPage() {
             </motion.div>
           ))}
         </div>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+        >
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Product
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Reference
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Condition
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Material
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Year
+                  </th>
+                  <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Trade Price
+                  </th>
+                  <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Retail Price
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredProducts.map((product, index) => (
+                  <motion.tr
+                    key={product.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05, duration: 0.3 }}
+                    className="hover:bg-gray-50 cursor-pointer transition-colors duration-150"
+                    onClick={() => openModal('productDetails', product)}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center mr-4">
+                          <ClockIcon className="w-6 h-6 text-gray-400" />
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {product.brand} {product.model}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {product.dialColor}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-mono text-gray-900">
+                        {product.reference}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={clsx(
+                        'inline-flex px-2 py-1 text-xs font-medium rounded-full',
+                        conditionColors[product.condition as keyof typeof conditionColors]
+                      )}>
+                        {product.condition}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {product.material}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {product.yearManufactured}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">
+                      {formatCurrency(product.tradePrice)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-700">
+                      {formatCurrency(product.retailPrice)}
+                    </td>
+                  </motion.tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
       )}
 
       {/* Stats */}

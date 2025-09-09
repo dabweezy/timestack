@@ -15,6 +15,7 @@ export interface WatchProduct {
   images?: string[]
   description?: string
   dateAdded: string
+  assignedCustomer?: string // Customer ID who this product is assigned to
 }
 
 export interface Customer {
@@ -99,7 +100,7 @@ export interface SalesData {
 // Modal types
 export interface ModalState {
   isOpen: boolean
-  type: 'customer' | 'customerDetails' | 'stock' | 'order' | 'sales' | 'product' | null
+  type: 'customer' | 'customerDetails' | 'stock' | 'order' | 'sales' | 'product' | 'productDetails' | null
   data?: any
 }
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import NeonBorder from '@/components/NeonBorder'
+import BorderBeam from '@/components/BorderBeam'
 import { 
   HomeIcon, 
   UsersIcon, 
@@ -53,15 +53,23 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
       )}
     >
       {/* TIMESTACK Logo Header */}
-      <div className="p-4 border-b border-blue-500/30 flex justify-center">
-        {/* Logo with neon border effect */}
-        <NeonBorder duration={3}>
+      <div className="p-4 border-b border-blue-500/30 flex items-center justify-center -ml-1">
+        {/* Logo with BorderBeam */}
+        <div className="relative rounded-lg p-2 bg-blue-600 overflow-hidden flex items-center justify-center">
           <img
             src="https://i.ibb.co/C3Lttm0S/logv2.png"
             alt="Timestack Logo"
-            className="w-auto h-auto max-w-[180px] max-h-[40px] object-contain block"
+            className="w-auto h-auto max-w-[180px] max-h-[40px] object-contain block relative z-10"
           />
-        </NeonBorder>
+          <BorderBeam
+            size={250}
+            duration={8}
+            delay={6}
+            borderWidth={2}
+            colorFrom="#ffffff"
+            colorTo="#f8fafc"
+          />
+        </div>
       </div>
 
       {/* Navigation */}
