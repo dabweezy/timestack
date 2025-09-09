@@ -57,23 +57,43 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
         isMobile && 'fixed inset-y-0 left-0 z-50 w-64'
       )}
     >
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-blue-500/30">
+      {/* TIMESTACK Logo Header */}
+      <div className="p-4 border-b border-blue-500/30">
         <motion.div
-          animate={{ opacity: sidebarCollapsed ? 0 : 1 }}
-          transition={{ duration: 0.2 }}
-          className="flex items-center space-x-3"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative"
         >
-          <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-            <WifiIcon className="w-5 h-5 text-white" />
-          </div>
-          {!sidebarCollapsed && (
-            <div className="text-white">
-              <div className="font-sf-pro font-semibold text-lg">Timestack</div>
-              <div className="text-xs text-blue-200">Luxury Inventory</div>
+          {/* Light Trace Effect */}
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400 opacity-75 blur-sm animate-pulse"></div>
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500 via-purple-600 to-blue-500 opacity-50 animate-ping"></div>
+          
+          {/* Logo Card */}
+          <div className="relative bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl px-4 py-3 shadow-lg">
+            <div className="flex items-center space-x-3">
+              {/* Logo Icon - 4 circles */}
+              <div className="flex items-center space-x-1">
+                {/* Three solid circles in triangle formation */}
+                <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
+                <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
+                <div className="w-2.5 h-2.5 bg-white rounded-full -ml-1 -mt-1"></div>
+                {/* Hollow circle */}
+                <div className="w-2.5 h-2.5 border-2 border-white rounded-full -ml-1 -mt-1"></div>
+              </div>
+              
+              {/* TIMESTACK Text */}
+              <motion.span 
+                animate={{ opacity: sidebarCollapsed ? 0 : 1 }}
+                transition={{ duration: 0.2 }}
+                className="text-white font-bold text-lg tracking-wide"
+              >
+                TIMESTACK
+              </motion.span>
             </div>
-          )}
+          </div>
         </motion.div>
+      </div>
         
         {!isMobile && (
           <button
