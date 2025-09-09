@@ -63,8 +63,8 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
                }}>
           </div>
           
-          {/* Logo content - no background */}
-          <div className="relative px-2 py-1">
+          {/* Logo content with border outline */}
+          <div className="relative p-0.5 border border-white/30 rounded-lg bg-white/5 backdrop-blur-sm">
             <img
               src="https://i.ibb.co/C3Lttm0S/logv2.png"
               alt="Timestack Logo"

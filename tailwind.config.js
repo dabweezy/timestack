@@ -10,15 +10,15 @@ module.exports = {
   	extend: {
   		fontFamily: {
   			'sf-pro': [
-  				'SF Pro Display"',
-  				'SF Pro Text"',
+  				'"SF Pro Display"',
+  				'"SF Pro Text"',
   				'-apple-system',
   				'BlinkMacSystemFont',
   				'system-ui',
   				'sans-serif'
   			],
   			guaruja: [
-  				'Guaruja Grotesk"',
+  				'"Guaruja Grotesk"',
   				'-apple-system',
   				'BlinkMacSystemFont',
   				'Segoe UI',
