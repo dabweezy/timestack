@@ -6,6 +6,7 @@ import CustomersPage from '@/components/pages/CustomersPage'
 import StockPage from '@/components/pages/StockPage'
 import SalesPage from '@/components/pages/SalesPage'
 import OrdersPage from '@/components/pages/OrdersPage'
+import ProfilePage from '@/components/pages/ProfilePage'
 import useAppStore from '@/store/useAppStore'
 
 const pageComponents = {
@@ -14,7 +15,7 @@ const pageComponents = {
   stock: StockPage,
   sales: SalesPage,
   orders: OrdersPage,
-  profile: DashboardPage, // ✅ Pro plan deployment - bottom gap & scroll fixes
+  profile: ProfilePage,
 }
 
 export default function Home() {

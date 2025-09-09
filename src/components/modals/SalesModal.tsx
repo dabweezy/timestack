@@ -16,7 +16,7 @@ import {
 } from '@heroicons/react/24/outline'
 import BaseModal from './BaseModal'
 import useAppStore from '@/store/useAppStore'
-import { formatCurrency, formatDate } from '@/utils/format'
+import { formatCurrency, formatDate, generateId } from '@/utils/format'
 import type { WatchProduct, Customer, Order } from '@/types'
 import clsx from 'clsx'
 
@@ -60,10 +60,12 @@ export default function SalesModal() {
       
       // Create order
       const order: Order = {
+        id: generateId('order'),
         orderNumber: `SALE-${Date.now()}`,
         orderType: 'sale',
         customer: selectedCustomer,
         watch: product,
+        product: product,
         salePrice,
         paymentMethod,
         status: 'completed',

@@ -33,7 +33,7 @@ const sets = [
 ]
 
 export default function StockModal() {
-  const { modals, closeModal, addWatchProduct, updateWatchProduct, customers } = useAppStore()
+  const { modals, closeModal, addWatchProduct, updateWatchProduct, addOrder, customers } = useAppStore()
   const isEditing = modals.data?.id
   const product = modals.data as WatchProduct
   
@@ -149,6 +149,24 @@ export default function StockModal() {
         updateWatchProduct(product.id, productData)
       } else {
         addWatchProduct(productData)
+        
+        // Create a purchase order
+        const purchaseOrder = {
+          id: generateId('order'),
+          orderNumber: `PO-${Date.now()}`,
+          orderType: 'purchase' as const,
+          customer: assignedCustomer ? customers.find(c => c.id === assignedCustomer) : null,
+          product: productData,
+          watch: productData,
+          salePrice: productData.costPrice,
+          paymentMethod: 'Bank Transfer',
+          status: 'completed' as const,
+          date: new Date().toISOString(),
+          timestamp: new Date().toISOString(),
+          notes: `Purchase of ${productData.brand} ${productData.model} - ${productData.reference}`
+        }
+        
+        addOrder(purchaseOrder)
       }
 
       closeModal()

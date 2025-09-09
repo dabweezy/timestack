@@ -15,6 +15,7 @@ import {
 } from '@heroicons/react/24/outline'
 import useAppStore from '@/store/useAppStore'
 import { formatCurrency, formatDate } from '@/utils/format'
+import { generatePurchaseReceipt, generateSalesReceipt } from '@/utils/pdfGenerator'
 import clsx from 'clsx'
 import type { Order } from '@/types'
 
@@ -33,7 +34,7 @@ const statusIcons = {
 }
 
 export default function OrdersPage() {
-  const { orders, openModal } = useAppStore()
+  const { orders, openModal, customers } = useAppStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('')
   const [typeFilter, setTypeFilter] = useState<string>('')
@@ -66,6 +67,25 @@ export default function OrdersPage() {
 
   const handleViewOrder = (order: Order) => {
     openModal('order', order)
+  }
+
+  const handleDownloadReceipt = (order: Order) => {
+    if (order.orderType === 'purchase') {
+      // Purchase receipt - only available if customer is assigned
+      if (order.watch.assignedCustomer) {
+        const customer = customers.find(c => c.id === order.watch.assignedCustomer)
+        if (customer) {
+          generatePurchaseReceipt(order.watch, customer)
+        } else {
+          alert('Customer information not found. Please ensure the product is assigned to a customer.')
+        }
+      } else {
+        alert('Purchase receipt is only available for products assigned to customers.')
+      }
+    } else if (order.orderType === 'sale') {
+      // Sales receipt - always available for sales
+      generateSalesReceipt(order)
+    }
   }
 
   return (
@@ -267,7 +287,23 @@ export default function OrdersPage() {
                         >
                           <EyeIcon className="w-5 h-5" />
                         </button>
-                        <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+                        <button 
+                          onClick={() => handleDownloadReceipt(order)}
+                          className={clsx(
+                            'p-2 transition-colors',
+                            (order.orderType === 'sale' || (order.orderType === 'purchase' && order.watch.assignedCustomer))
+                              ? 'text-blue-600 hover:text-blue-800'
+                              : 'text-gray-300 cursor-not-allowed'
+                          )}
+                          disabled={order.orderType === 'purchase' && !order.watch.assignedCustomer}
+                          title={
+                            order.orderType === 'sale'
+                              ? 'Download Sales Receipt'
+                              : order.orderType === 'purchase' && order.watch.assignedCustomer
+                              ? 'Download Purchase Receipt'
+                              : 'Purchase receipt only available for products assigned to customers'
+                          }
+                        >
                           <DocumentArrowDownIcon className="w-5 h-5" />
                         </button>
                       </div>

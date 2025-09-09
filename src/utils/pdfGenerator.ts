@@ -1,5 +1,5 @@
 import jsPDF from 'jspdf'
-import type { Order, PdfReceiptData } from '@/types'
+import type { Order, PdfReceiptData, WatchProduct, Customer } from '@/types'
 import { formatCurrency, formatDate } from './format'
 
 const companyInfo = {
@@ -320,4 +320,418 @@ export const generateStockList = (products: any[]): void => {
   })
 
   pdf.save('stock_list.pdf')
+}
+
+export const generatePurchaseReceipt = (product: WatchProduct, customer: Customer): void => {
+  const pdf = new jsPDF()
+  const pageWidth = pdf.internal.pageSize.getWidth()
+  const pageHeight = pdf.internal.pageSize.getHeight()
+  
+  // Apple-style colors
+  const primaryColor = '#007AFF'
+  const darkColor = '#1D1D1F'
+  const grayColor = '#8E8E93'
+  const lightGrayColor = '#F2F2F7'
+  const borderColor = '#E5E5EA'
+  
+  let yPosition = 20
+
+  // Header with company info and receipt details
+  pdf.setFillColor(primaryColor)
+  pdf.rect(0, 0, pageWidth, 60, 'F')
+  
+  // Company name
+  pdf.setTextColor(255, 255, 255)
+  pdf.setFontSize(24)
+  pdf.setFont('helvetica', 'bold')
+  pdf.text('Timestack', 20, 25)
+  
+  // Tagline
+  pdf.setFontSize(12)
+  pdf.setFont('helvetica', 'normal')
+  pdf.text('Luxury Timepiece Specialists', 20, 35)
+  
+  // Receipt info
+  pdf.setFontSize(14)
+  pdf.setFont('helvetica', 'bold')
+  pdf.text('PURCHASE RECEIPT', pageWidth - 20, 25, { align: 'right' })
+  
+  // Receipt number
+  pdf.setFontSize(12)
+  pdf.setFont('helvetica', 'normal')
+  pdf.text(`#${product.id}`, pageWidth - 20, 35, { align: 'right' })
+  
+  // Date
+  pdf.text(formatDate(product.dateAdded), pageWidth - 20, 45, { align: 'right' })
+  
+  yPosition = 80
+
+  // Customer and company addresses
+  pdf.setTextColor(darkColor)
+  pdf.setFontSize(12)
+  pdf.setFont('helvetica', 'bold')
+  pdf.text('Bill To:', 20, yPosition)
+  
+  // Customer address
+  pdf.setFont('helvetica', 'normal')
+  pdf.setFontSize(11)
+  const customerAddress = [
+    `${customer.firstName} ${customer.lastName}`,
+    customer.address1,
+    customer.city,
+    customer.country
+  ].filter(Boolean)
+  
+  customerAddress.forEach((line, index) => {
+    pdf.text(line, 20, yPosition + 10 + (index * 5))
+  })
+  
+  // Contact info
+  if (customer.email) {
+    pdf.text(`Email: ${customer.email}`, 20, yPosition + 10 + (customerAddress.length * 5) + 5)
+  }
+  if (customer.mobile) {
+    pdf.text(`Phone: ${customer.mobile}`, 20, yPosition + 10 + (customerAddress.length * 5) + 10)
+  }
+  
+  // Company address (right side)
+  pdf.setFont('helvetica', 'bold')
+  pdf.text('From:', pageWidth - 20, yPosition, { align: 'right' })
+  
+  pdf.setFont('helvetica', 'normal')
+  const companyAddress = [
+    'Timestack',
+    '10B Berkeley St',
+    'Mayfair, London W1J 8DR',
+    'United Kingdom'
+  ]
+  
+  companyAddress.forEach((line, index) => {
+    pdf.text(line, pageWidth - 20, yPosition + 10 + (index * 5), { align: 'right' })
+  })
+  
+  yPosition += 80
+
+  // Product details table
+  pdf.setFillColor(lightGrayColor)
+  pdf.rect(20, yPosition - 5, pageWidth - 40, 20, 'F')
+  
+  // Table headers
+  pdf.setTextColor(darkColor)
+  pdf.setFontSize(11)
+  pdf.setFont('helvetica', 'bold')
+  pdf.text('Product Details', 25, yPosition + 5)
+  pdf.text('SKU', 120, yPosition + 5)
+  pdf.text('Qty', 160, yPosition + 5)
+  pdf.text('Price', pageWidth - 25, yPosition + 5, { align: 'right' })
+  
+  yPosition += 25
+
+  // Product row
+  pdf.setFont('helvetica', 'normal')
+  pdf.setTextColor(darkColor)
+  
+  // Product description
+  const productDescription = `${product.brand} ${product.model}`
+  pdf.text(productDescription, 25, yPosition)
+  
+  // Reference/SKU
+  pdf.text(product.reference, 120, yPosition)
+  
+  // Quantity
+  pdf.text('1', 160, yPosition)
+  
+  // Price
+  pdf.text(formatCurrency(product.costPrice), pageWidth - 25, yPosition, { align: 'right' })
+  
+  yPosition += 15
+
+  // Additional product details
+  if (product.material) {
+    pdf.setFontSize(10)
+    pdf.setTextColor(grayColor)
+    pdf.text(`Material: ${product.material}`, 25, yPosition)
+    yPosition += 5
+  }
+  
+  if (product.dialColor) {
+    pdf.text(`Dial: ${product.dialColor}`, 25, yPosition)
+    yPosition += 5
+  }
+  
+  if (product.yearManufactured) {
+    pdf.text(`Year: ${product.yearManufactured}`, 25, yPosition)
+    yPosition += 5
+  }
+  
+  if (product.condition) {
+    pdf.text(`Condition: ${product.condition}`, 25, yPosition)
+    yPosition += 5
+  }
+  
+  yPosition += 20
+
+  // Totals section
+  const subtotal = product.costPrice
+  const shipping = 0
+  const total = subtotal + shipping
+
+  // Subtotal
+  pdf.setFontSize(11)
+  pdf.setTextColor(darkColor)
+  pdf.text('Subtotal:', pageWidth - 80, yPosition, { align: 'right' })
+  pdf.text(formatCurrency(subtotal), pageWidth - 25, yPosition, { align: 'right' })
+  yPosition += 8
+
+  // Shipping
+  pdf.text('Shipping:', pageWidth - 80, yPosition, { align: 'right' })
+  pdf.text('Free', pageWidth - 25, yPosition, { align: 'right' })
+  yPosition += 8
+
+  // Total line
+  pdf.setLineWidth(0.5)
+  pdf.setDrawColor(borderColor)
+  pdf.line(20, yPosition, pageWidth - 20, yPosition)
+  yPosition += 10
+
+  // Total
+  pdf.setFont('helvetica', 'bold')
+  pdf.setFontSize(12)
+  pdf.text('Total:', pageWidth - 80, yPosition, { align: 'right' })
+  pdf.text(formatCurrency(total), pageWidth - 25, yPosition, { align: 'right' })
+
+  yPosition += 30
+
+  // Payment terms
+  pdf.setFont('helvetica', 'normal')
+  pdf.setFontSize(10)
+  pdf.setTextColor(grayColor)
+  pdf.text('Payment Terms: Net 30 days', 20, yPosition)
+  pdf.text('Thank you for your business!', pageWidth - 20, yPosition, { align: 'right' })
+
+  yPosition += 20
+
+  // Footer
+  pdf.setFontSize(9)
+  pdf.setTextColor(grayColor)
+  pdf.text('Timestack Ltd · 10B Berkeley St, Mayfair, London W1J 8DR', pageWidth / 2, pageHeight - 20, { align: 'center' })
+  pdf.text('Company No. 15075111 · info@timestack.com', pageWidth / 2, pageHeight - 15, { align: 'center' })
+
+  // Save the PDF
+  pdf.save(`purchase_receipt_${product.reference}.pdf`)
+}
+
+export const generateSalesReceipt = (order: Order): void => {
+  const pdf = new jsPDF()
+  const pageWidth = pdf.internal.pageSize.getWidth()
+  const pageHeight = pdf.internal.pageSize.getHeight()
+  
+  // Apple-style colors
+  const primaryColor = '#007AFF'
+  const darkColor = '#1D1D1F'
+  const grayColor = '#8E8E93'
+  const lightGrayColor = '#F2F2F7'
+  const borderColor = '#E5E5EA'
+  
+  let yPosition = 20
+
+  // Header with company info and receipt details
+  pdf.setFillColor(primaryColor)
+  pdf.rect(0, 0, pageWidth, 60, 'F')
+  
+  // Company name
+  pdf.setTextColor(255, 255, 255)
+  pdf.setFontSize(24)
+  pdf.setFont('helvetica', 'bold')
+  pdf.text('Timestack', 20, 25)
+  
+  // Tagline
+  pdf.setFontSize(12)
+  pdf.setFont('helvetica', 'normal')
+  pdf.text('Luxury Timepiece Specialists', 20, 35)
+  
+  // Receipt info
+  pdf.setFontSize(14)
+  pdf.setFont('helvetica', 'bold')
+  pdf.text('SALES RECEIPT', pageWidth - 20, 25, { align: 'right' })
+  
+  // Receipt number
+  pdf.setFontSize(12)
+  pdf.setFont('helvetica', 'normal')
+  pdf.text(`#${order.orderNumber}`, pageWidth - 20, 35, { align: 'right' })
+  
+  // Date
+  pdf.text(formatDate(order.timestamp), pageWidth - 20, 45, { align: 'right' })
+  
+  yPosition = 80
+
+  // Customer and company addresses
+  pdf.setTextColor(darkColor)
+  pdf.setFontSize(12)
+  pdf.setFont('helvetica', 'bold')
+  pdf.text('Bill To:', 20, yPosition)
+  
+  // Customer address
+  pdf.setFont('helvetica', 'normal')
+  pdf.setFontSize(11)
+  const customerAddress = [
+    `${order.customer.firstName} ${order.customer.lastName}`,
+    order.customer.address1,
+    order.customer.city,
+    order.customer.country
+  ].filter(Boolean)
+  
+  customerAddress.forEach((line, index) => {
+    pdf.text(line, 20, yPosition + 10 + (index * 5))
+  })
+  
+  // Contact info
+  if (order.customer.email) {
+    pdf.text(`Email: ${order.customer.email}`, 20, yPosition + 10 + (customerAddress.length * 5) + 5)
+  }
+  if (order.customer.mobile) {
+    pdf.text(`Phone: ${order.customer.mobile}`, 20, yPosition + 10 + (customerAddress.length * 5) + 10)
+  }
+  
+  // Company address (right side)
+  pdf.setFont('helvetica', 'bold')
+  pdf.text('From:', pageWidth - 20, yPosition, { align: 'right' })
+  
+  pdf.setFont('helvetica', 'normal')
+  const companyAddress = [
+    'Timestack',
+    '10B Berkeley St',
+    'Mayfair, London W1J 8DR',
+    'United Kingdom'
+  ]
+  
+  companyAddress.forEach((line, index) => {
+    pdf.text(line, pageWidth - 20, yPosition + 10 + (index * 5), { align: 'right' })
+  })
+  
+  yPosition += 80
+
+  // Product details table
+  pdf.setFillColor(lightGrayColor)
+  pdf.rect(20, yPosition - 5, pageWidth - 40, 20, 'F')
+  
+  // Table headers
+  pdf.setTextColor(darkColor)
+  pdf.setFontSize(11)
+  pdf.setFont('helvetica', 'bold')
+  pdf.text('Product Details', 25, yPosition + 5)
+  pdf.text('SKU', 120, yPosition + 5)
+  pdf.text('Qty', 160, yPosition + 5)
+  pdf.text('Price', pageWidth - 25, yPosition + 5, { align: 'right' })
+  
+  yPosition += 25
+
+  // Product row
+  pdf.setFont('helvetica', 'normal')
+  pdf.setTextColor(darkColor)
+  
+  // Product description
+  const productDescription = `${order.watch.brand} ${order.watch.model}`
+  pdf.text(productDescription, 25, yPosition)
+  
+  // Reference/SKU
+  pdf.text(order.watch.reference, 120, yPosition)
+  
+  // Quantity
+  pdf.text('1', 160, yPosition)
+  
+  // Price
+  pdf.text(formatCurrency(order.salePrice), pageWidth - 25, yPosition, { align: 'right' })
+  
+  yPosition += 15
+
+  // Additional product details
+  if (order.watch.material) {
+    pdf.setFontSize(10)
+    pdf.setTextColor(grayColor)
+    pdf.text(`Material: ${order.watch.material}`, 25, yPosition)
+    yPosition += 5
+  }
+  
+  if (order.watch.dialColor) {
+    pdf.text(`Dial: ${order.watch.dialColor}`, 25, yPosition)
+    yPosition += 5
+  }
+  
+  if (order.watch.yearManufactured) {
+    pdf.text(`Year: ${order.watch.yearManufactured}`, 25, yPosition)
+    yPosition += 5
+  }
+  
+  if (order.watch.condition) {
+    pdf.text(`Condition: ${order.watch.condition}`, 25, yPosition)
+    yPosition += 5
+  }
+  
+  yPosition += 20
+
+  // Payment method
+  if (order.paymentMethod) {
+    pdf.setFontSize(11)
+    pdf.setTextColor(darkColor)
+    pdf.text(`Payment Method: ${order.paymentMethod}`, 25, yPosition)
+    yPosition += 15
+  }
+
+  // Notes
+  if (order.notes) {
+    pdf.setFontSize(10)
+    pdf.setTextColor(grayColor)
+    pdf.text(`Notes: ${order.notes}`, 25, yPosition)
+    yPosition += 15
+  }
+
+  // Totals section
+  const subtotal = order.salePrice
+  const shipping = 0
+  const total = subtotal + shipping
+
+  // Subtotal
+  pdf.setFontSize(11)
+  pdf.setTextColor(darkColor)
+  pdf.text('Subtotal:', pageWidth - 80, yPosition, { align: 'right' })
+  pdf.text(formatCurrency(subtotal), pageWidth - 25, yPosition, { align: 'right' })
+  yPosition += 8
+
+  // Shipping
+  pdf.text('Shipping:', pageWidth - 80, yPosition, { align: 'right' })
+  pdf.text('Free', pageWidth - 25, yPosition, { align: 'right' })
+  yPosition += 8
+
+  // Total line
+  pdf.setLineWidth(0.5)
+  pdf.setDrawColor(borderColor)
+  pdf.line(20, yPosition, pageWidth - 20, yPosition)
+  yPosition += 10
+
+  // Total
+  pdf.setFont('helvetica', 'bold')
+  pdf.setFontSize(12)
+  pdf.text('Total:', pageWidth - 80, yPosition, { align: 'right' })
+  pdf.text(formatCurrency(total), pageWidth - 25, yPosition, { align: 'right' })
+
+  yPosition += 30
+
+  // Payment terms
+  pdf.setFont('helvetica', 'normal')
+  pdf.setFontSize(10)
+  pdf.setTextColor(grayColor)
+  pdf.text('Payment Status: Completed', 20, yPosition)
+  pdf.text('Thank you for your purchase!', pageWidth - 20, yPosition, { align: 'right' })
+
+  yPosition += 20
+
+  // Footer
+  pdf.setFontSize(9)
+  pdf.setTextColor(grayColor)
+  pdf.text('Timestack Ltd · 10B Berkeley St, Mayfair, London W1J 8DR', pageWidth / 2, pageHeight - 20, { align: 'center' })
+  pdf.text('Company No. 15075111 · info@timestack.com', pageWidth / 2, pageHeight - 15, { align: 'center' })
+
+  // Save the PDF
+  pdf.save(`sales_receipt_${order.orderNumber}.pdf`)
 }

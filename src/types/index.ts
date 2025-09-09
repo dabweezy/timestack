@@ -40,10 +40,12 @@ export interface Customer {
 }
 
 export interface Order {
+  id: string
   orderNumber: string
   orderType: 'purchase' | 'sale'
   customer: Customer
   watch: WatchProduct
+  product: WatchProduct
   salePrice: number
   paymentMethod: 'cash' | 'card' | 'bank_transfer'
   status: 'pending' | 'processing' | 'completed' | 'cancelled'
