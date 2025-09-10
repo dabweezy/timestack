@@ -110,7 +110,7 @@ export const customerService = {
 export const productService = {
   async getAll(): Promise<WatchProduct[]> {
     const { data, error } = await supabase
-      .from('products')
+      .from('watches')
       .select('*')
       .order('created_at', { ascending: false })
     
@@ -139,7 +139,7 @@ export const productService = {
 
   async create(product: Omit<WatchProduct, 'id'>): Promise<WatchProduct> {
     const { data, error } = await supabase
-      .from('products')
+      .from('watches')
       .insert({
         brand: product.brand,
         model: product.model,
@@ -186,7 +186,7 @@ export const productService = {
 
   async update(id: string, updates: Partial<WatchProduct>): Promise<WatchProduct> {
     const { data, error } = await supabase
-      .from('products')
+      .from('watches')
       .update({
         brand: updates.brand,
         model: updates.model,
@@ -235,7 +235,7 @@ export const productService = {
 
   async delete(id: string): Promise<void> {
     const { error } = await supabase
-      .from('products')
+      .from('watches')
       .delete()
       .eq('id', id)
     
@@ -251,7 +251,7 @@ export const orderService = {
       .select(`
         *,
         customer:customers(*),
-        product:products(*)
+        watch:watches(*)
       `)
       .order('created_at', { ascending: false })
     
@@ -274,42 +274,42 @@ export const orderService = {
         country: order.customer.country
       },
       watch: {
-        id: order.product.id,
-        brand: order.product.brand,
-        model: order.product.model,
-        reference: order.product.reference,
-        serial: order.product.serial,
-        material: order.product.material,
-        dialColor: order.product.dial_color,
-        condition: order.product.condition,
-        yearManufactured: order.product.year_manufactured,
-        set: order.product.set,
-        costPrice: order.product.cost_price,
-        tradePrice: order.product.trade_price,
-        retailPrice: order.product.retail_price,
-        description: order.product.description,
-        dateAdded: order.product.date_added,
-        status: order.product.status,
-        assignedCustomer: order.product.assigned_customer
+        id: order.watch.id,
+        brand: order.watch.brand,
+        model: order.watch.model,
+        reference: order.watch.reference,
+        serial: order.watch.serial,
+        material: order.watch.material,
+        dialColor: order.watch.dial_color,
+        condition: order.watch.condition,
+        yearManufactured: order.watch.year_manufactured,
+        set: order.watch.set,
+        costPrice: order.watch.cost_price,
+        tradePrice: order.watch.trade_price,
+        retailPrice: order.watch.retail_price,
+        description: order.watch.description,
+        dateAdded: order.watch.date_added,
+        status: order.watch.status,
+        assignedCustomer: order.watch.assigned_customer
       },
       product: {
-        id: order.product.id,
-        brand: order.product.brand,
-        model: order.product.model,
-        reference: order.product.reference,
-        serial: order.product.serial,
-        material: order.product.material,
-        dialColor: order.product.dial_color,
-        condition: order.product.condition,
-        yearManufactured: order.product.year_manufactured,
-        set: order.product.set,
-        costPrice: order.product.cost_price,
-        tradePrice: order.product.trade_price,
-        retailPrice: order.product.retail_price,
-        description: order.product.description,
-        dateAdded: order.product.date_added,
-        status: order.product.status,
-        assignedCustomer: order.product.assigned_customer
+        id: order.watch.id,
+        brand: order.watch.brand,
+        model: order.watch.model,
+        reference: order.watch.reference,
+        serial: order.watch.serial,
+        material: order.watch.material,
+        dialColor: order.watch.dial_color,
+        condition: order.watch.condition,
+        yearManufactured: order.watch.year_manufactured,
+        set: order.watch.set,
+        costPrice: order.watch.cost_price,
+        tradePrice: order.watch.trade_price,
+        retailPrice: order.watch.retail_price,
+        description: order.watch.description,
+        dateAdded: order.watch.date_added,
+        status: order.watch.status,
+        assignedCustomer: order.watch.assigned_customer
       },
       salePrice: order.sale_price,
       paymentMethod: order.payment_method,
@@ -327,7 +327,7 @@ export const orderService = {
         order_number: order.orderNumber,
         order_type: order.orderType,
         customer_id: order.customer.id,
-        product_id: order.product.id,
+        watch_id: order.product.id,
         sale_price: order.salePrice,
         payment_method: order.paymentMethod,
         status: order.status,
@@ -338,7 +338,7 @@ export const orderService = {
       .select(`
         *,
         customer:customers(*),
-        product:products(*)
+        watch:watches(*)
       `)
       .single()
     

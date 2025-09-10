@@ -67,13 +67,31 @@ export const useSupabaseStore = create<SupabaseStore>((set, get) => ({
         orderService.getAll()
       ])
       
-      set({ customers, watchProducts, orders, loading: false })
-    } catch (error) {
-      console.error('Error loading data:', error)
+      // Handle empty data gracefully - no error, just empty arrays
       set({ 
-        error: error instanceof Error ? error.message : 'Failed to load data',
+        customers: customers || [], 
+        watchProducts: watchProducts || [], 
+        orders: orders || [], 
         loading: false 
       })
+    } catch (error) {
+      console.error('Error loading data:', error)
+      // Only show error for actual connection issues, not empty data
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load data'
+      if (errorMessage.includes('No rows') || errorMessage.includes('not found')) {
+        // Empty data is fine, just set empty arrays
+        set({ 
+          customers: [], 
+          watchProducts: [], 
+          orders: [], 
+          loading: false 
+        })
+      } else {
+        set({ 
+          error: errorMessage,
+          loading: false 
+        })
+      }
     }
   },
 
