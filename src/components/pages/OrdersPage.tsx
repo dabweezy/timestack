@@ -13,7 +13,7 @@ import {
   EyeIcon,
   DocumentArrowDownIcon
 } from '@heroicons/react/24/outline'
-import useAppStore from '@/store/useAppStore'
+import { useSupabaseStore } from '@/store/useSupabaseStore'
 import { formatCurrency, formatDate } from '@/utils/format'
 import { generatePurchaseReceipt, generateSalesReceipt } from '@/utils/pdfGenerator'
 import clsx from 'clsx'
@@ -34,7 +34,7 @@ const statusIcons = {
 }
 
 export default function OrdersPage() {
-  const { orders, openModal, customers } = useAppStore()
+  const { orders, openModal, customers } = useSupabaseStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('')
   const [typeFilter, setTypeFilter] = useState<string>('')

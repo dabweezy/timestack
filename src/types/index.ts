@@ -43,7 +43,7 @@ export interface Order {
   id: string
   orderNumber: string
   orderType: 'purchase' | 'sale'
-  customer: Customer
+  customer: Customer | null
   watch: WatchProduct
   product: WatchProduct
   salePrice: number

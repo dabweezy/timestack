@@ -14,7 +14,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 async function testSetup() {
-  console.log('🔍 Testing Supabase Multi-Tenant Setup...\n')can i 
+  console.log('🔍 Testing Supabase Multi-Tenant Setup...\n') 
   
   try {
     // Test 1: Check if companies table exists and has data

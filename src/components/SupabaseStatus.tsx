@@ -1,11 +1,9 @@
 'use client'
 
-import { useSupabaseData } from '@/hooks/useSupabaseData'
 import { useSupabaseStore } from '@/store/useSupabaseStore'
 
 export default function SupabaseStatus() {
-  const { loading, error } = useSupabaseData()
-  const { customers, watchProducts, orders } = useSupabaseStore()
+  const { loading, error, customers, watchProducts, orders } = useSupabaseStore()
 
   if (loading) {
     return (

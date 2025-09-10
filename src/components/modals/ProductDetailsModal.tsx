@@ -18,7 +18,7 @@ import {
   PencilIcon
 } from '@heroicons/react/24/outline'
 import BaseModal from './BaseModal'
-import useAppStore from '@/store/useAppStore'
+import { useSupabaseStore } from '@/store/useSupabaseStore'
 import { formatCurrency, formatDate } from '@/utils/format'
 import type { WatchProduct, Order } from '@/types'
 import clsx from 'clsx'
@@ -32,7 +32,7 @@ const conditionColors = {
 }
 
 export default function ProductDetailsModal() {
-  const { modals, closeModal, orders, customers, openModal, updateWatchProduct } = useAppStore()
+  const { modals, closeModal, orders, customers, openModal, updateWatchProduct } = useSupabaseStore()
   const product = modals.data as WatchProduct
   const [customerSearchQuery, setCustomerSearchQuery] = useState('')
   const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null)

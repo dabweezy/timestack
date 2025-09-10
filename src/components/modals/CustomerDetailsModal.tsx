@@ -12,12 +12,12 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline'
 import BaseModal from './BaseModal'
-import useAppStore from '@/store/useAppStore'
+import { useSupabaseStore } from '@/store/useSupabaseStore'
 import { formatDate, formatPhone } from '@/utils/format'
 import type { Customer } from '@/types'
 
 export default function CustomerDetailsModal() {
-  const { modals, closeModal } = useAppStore()
+  const { modals, closeModal } = useSupabaseStore()
   const customer = modals.data as Customer
 
   if (modals.type !== 'customerDetails' || !customer) return null
@@ -264,7 +264,7 @@ export default function CustomerDetailsModal() {
             whileTap={{ scale: 0.98 }}
             onClick={() => {
               closeModal()
-              useAppStore.getState().openModal('customer', customer)
+              useSupabaseStore.getState().openModal('customer', customer)
             }}
             className="btn btn-primary"
           >

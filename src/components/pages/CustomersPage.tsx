@@ -9,11 +9,11 @@ import {
   EnvelopeIcon,
   PhoneIcon
 } from '@heroicons/react/24/outline'
-import useAppStore from '@/store/useAppStore'
+import { useSupabaseStore } from '@/store/useSupabaseStore'
 import { formatDate, formatPhone } from '@/utils/format'
 
 export default function CustomersPage() {
-  const { customers, openModal } = useAppStore()
+  const { customers, openModal } = useSupabaseStore()
   const [searchQuery, setSearchQuery] = useState('')
 
   const filteredCustomers = customers.filter(customer =>

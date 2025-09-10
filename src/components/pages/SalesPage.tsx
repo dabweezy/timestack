@@ -11,12 +11,12 @@ import {
   UserIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline'
-import useAppStore from '@/store/useAppStore'
+import { useSupabaseStore } from '@/store/useSupabaseStore'
 import { formatCurrency, formatDate } from '@/utils/format'
 import clsx from 'clsx'
 
 export default function SalesPage() {
-  const { watchProducts, customers, openModal } = useAppStore()
+  const { watchProducts, customers, openModal } = useSupabaseStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
 

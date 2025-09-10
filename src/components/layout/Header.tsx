@@ -2,14 +2,14 @@
 
 import { motion } from 'framer-motion'
 import { BellIcon, Cog6ToothIcon, UserCircleIcon } from '@heroicons/react/24/outline'
-import useAppStore from '@/store/useAppStore'
+import { useSupabaseStore } from '@/store/useSupabaseStore'
 import clsx from 'clsx'
 
 const pageNames = {
   dashboard: 'Dashboard',
   customers: 'Customer HQ', 
   stock: 'Stock Management',
-  sales: 'Sales Analytics',
+  sales: 'Sales Management',
   orders: 'Order Management',
   profile: 'Profile Settings'
 }
@@ -19,7 +19,7 @@ interface HeaderProps {
 }
 
 export default function Header({ onMobileMenuToggle }: HeaderProps) {
-  const { currentPage, user } = useAppStore()
+  const { currentPage, user, setCurrentPage } = useSupabaseStore()
   
   const currentPageName = pageNames[currentPage] || 'Timestack'
 
@@ -78,6 +78,7 @@ export default function Header({ onMobileMenuToggle }: HeaderProps) {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() => setCurrentPage('profile')}
               className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-apple-blue to-apple-purple text-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200"
             >
               <UserCircleIcon className="w-6 h-6" />
@@ -94,7 +95,7 @@ function getPageSubtitle(page: string): string {
     dashboard: 'Overview of your luxury watch inventory',
     customers: 'Manage your customer relationships',
     stock: 'Track and manage your watch inventory',
-    sales: 'Analyze your sales performance and trends',
+    sales: 'Process sales and manage transactions',
     orders: 'Process and track customer orders',
     profile: 'Manage your account settings'
   }

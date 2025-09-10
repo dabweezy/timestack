@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { UserIcon, EnvelopeIcon, PhoneIcon, MapPinIcon } from '@heroicons/react/24/outline'
 import BaseModal from './BaseModal'
-import useAppStore from '@/store/useAppStore'
+import { useSupabaseStore } from '@/store/useSupabaseStore'
 import { generateId } from '@/utils/format'
 import type { Customer, CustomerForm } from '@/types'
 
 export default function CustomerModal() {
-  const { modals, closeModal, addCustomer, updateCustomer } = useAppStore()
+  const { modals, closeModal, addCustomer, updateCustomer } = useSupabaseStore()
   const isEditing = modals.data?.id
   const customer = modals.data as Customer
 

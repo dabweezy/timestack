@@ -13,6 +13,13 @@ interface SupabaseStore {
   sidebarCollapsed: boolean
   modals: ModalState
   
+  // User
+  user: {
+    name: string
+    email: string
+    role: string
+  }
+  
   // Loading states
   loading: boolean
   error: string | null
@@ -47,6 +54,11 @@ export const useSupabaseStore = create<SupabaseStore>((set, get) => ({
   currentPage: 'dashboard',
   sidebarCollapsed: false,
   modals: { type: null, data: null, isOpen: false },
+  user: {
+    name: 'Admin User',
+    email: 'admin@timestack.com',
+    role: 'Administrator',
+  },
   loading: false,
   error: null,
 

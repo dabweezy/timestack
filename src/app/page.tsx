@@ -10,8 +10,6 @@ import OrdersPage from '@/components/pages/OrdersPage'
 import ProfilePage from '@/components/pages/ProfilePage'
 import LoginPage from '@/components/pages/LoginPage'
 import { useSupabaseStore } from '@/store/useSupabaseStore'
-import { useSupabaseData } from '@/hooks/useSupabaseData'
-import SupabaseStatus from '@/components/SupabaseStatus'
 import { supabase } from '@/lib/supabase'
 
 const pageComponents = {
@@ -27,7 +25,7 @@ export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const currentPage = useSupabaseStore(state => state.currentPage)
-  const { loading, error } = useSupabaseData()
+  const { loading, error, loadData } = useSupabaseStore()
   const CurrentPageComponent = pageComponents[currentPage] || DashboardPage
 
   useEffect(() => {
@@ -56,6 +54,13 @@ export default function Home() {
 
     return () => subscription.unsubscribe()
   }, [])
+
+  // Load data when user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && !loading) {
+      loadData()
+    }
+  }, [isAuthenticated, loadData])
 
   // Show loading screen while checking authentication
   if (isLoading) {
@@ -110,7 +115,6 @@ export default function Home() {
   return (
     <DashboardLayout>
       <CurrentPageComponent />
-      <SupabaseStatus />
     </DashboardLayout>
   )
 }

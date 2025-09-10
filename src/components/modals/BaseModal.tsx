@@ -3,7 +3,7 @@
 import { Fragment } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import useAppStore from '@/store/useAppStore'
+import { useSupabaseStore } from '@/store/useSupabaseStore'
 
 interface BaseModalProps {
   children: React.ReactNode
@@ -20,7 +20,7 @@ const sizeClasses = {
 }
 
 export default function BaseModal({ children, title, size = 'lg' }: BaseModalProps) {
-  const { modals, closeModal } = useAppStore()
+  const { modals, closeModal } = useSupabaseStore()
 
   return (
     <AnimatePresence>

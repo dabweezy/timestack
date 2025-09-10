@@ -11,7 +11,7 @@ import {
   ClockIcon,
   ChartBarIcon
 } from '@heroicons/react/24/outline'
-import useAppStore from '@/store/useAppStore'
+import { useSupabaseStore } from '@/store/useSupabaseStore'
 import { formatCurrency, formatNumber } from '@/utils/format'
 import clsx from 'clsx'
 
@@ -55,7 +55,7 @@ const statsConfig = [
 ]
 
 export default function DashboardPage() {
-  const { orders, customers, watchProducts, setCurrentPage } = useAppStore()
+  const { orders, customers, watchProducts, setCurrentPage } = useSupabaseStore()
   
   const getGreeting = () => {
     const hour = new Date().getHours()

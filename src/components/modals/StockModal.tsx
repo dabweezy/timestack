@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { ClockIcon, CurrencyDollarIcon, TagIcon, UserIcon, MagnifyingGlassIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import BaseModal from './BaseModal'
-import useAppStore from '@/store/useAppStore'
+import { useSupabaseStore } from '@/store/useSupabaseStore'
 import { generateId } from '@/utils/format'
 import type { WatchProduct, StockForm } from '@/types'
 
@@ -33,7 +33,7 @@ const sets = [
 ]
 
 export default function StockModal() {
-  const { modals, closeModal, addWatchProduct, updateWatchProduct, addOrder, customers } = useAppStore()
+  const { modals, closeModal, addWatchProduct, updateWatchProduct, addOrder, customers } = useSupabaseStore()
   const isEditing = modals.data?.id
   const product = modals.data as WatchProduct
   
@@ -111,7 +111,7 @@ export default function StockModal() {
     else if (isNaN(parseFloat(formData.costPrice)) || parseFloat(formData.costPrice) <= 0) {
       newErrors.costPrice = 'Please enter a valid price'
     }
-    if (!formData.stockType) newErrors.stockType = 'Stock type is required'
+    if (!formData.stockType) newErrors.stockType = 'Stock type is required' as any
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -155,11 +155,11 @@ export default function StockModal() {
           id: generateId('order'),
           orderNumber: `PO-${Date.now()}`,
           orderType: 'purchase' as const,
-          customer: assignedCustomer ? customers.find(c => c.id === assignedCustomer) : null,
+          customer: assignedCustomer ? customers.find(c => c.id === assignedCustomer) || null : null,
           product: productData,
           watch: productData,
           salePrice: productData.costPrice,
-          paymentMethod: 'Bank Transfer',
+          paymentMethod: 'bank_transfer' as const,
           status: 'completed' as const,
           date: new Date().toISOString(),
           timestamp: new Date().toISOString(),

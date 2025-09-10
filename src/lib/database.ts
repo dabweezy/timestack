@@ -27,9 +27,14 @@ export const customerService = {
   },
 
   async create(customer: Omit<Customer, 'id'>): Promise<Customer> {
+    // Get current user's company_id from JWT
+    const { data: { user } } = await supabase.auth.getUser()
+    const companyId = user?.user_metadata?.company_id || '550e8400-e29b-41d4-a716-446655440001' // Default company
+    
     const { data, error } = await supabase
       .from('customers')
       .insert({
+        company_id: companyId,
         first_name: customer.firstName,
         last_name: customer.lastName,
         email: customer.email,
@@ -138,9 +143,14 @@ export const productService = {
   },
 
   async create(product: Omit<WatchProduct, 'id'>): Promise<WatchProduct> {
+    // Get current user's company_id from JWT
+    const { data: { user } } = await supabase.auth.getUser()
+    const companyId = user?.user_metadata?.company_id || '550e8400-e29b-41d4-a716-446655440001' // Default company
+    
     const { data, error } = await supabase
       .from('watches')
       .insert({
+        company_id: companyId,
         brand: product.brand,
         model: product.model,
         reference: product.reference,
@@ -261,7 +271,7 @@ export const orderService = {
       id: order.id,
       orderNumber: order.order_number,
       orderType: order.order_type,
-      customer: {
+      customer: order.customer ? {
         id: order.customer.id,
         firstName: order.customer.first_name,
         lastName: order.customer.last_name,
@@ -271,8 +281,9 @@ export const orderService = {
         address2: order.customer.address2,
         city: order.customer.city,
         postcode: order.customer.postcode,
-        country: order.customer.country
-      },
+        country: order.customer.country,
+        dateAdded: order.customer.date_added || new Date().toISOString()
+      } : null,
       watch: {
         id: order.watch.id,
         brand: order.watch.brand,
@@ -321,12 +332,17 @@ export const orderService = {
   },
 
   async create(order: Omit<Order, 'id'>): Promise<Order> {
+    // Get current user's company_id from JWT
+    const { data: { user } } = await supabase.auth.getUser()
+    const companyId = user?.user_metadata?.company_id || '550e8400-e29b-41d4-a716-446655440001' // Default company
+    
     const { data, error } = await supabase
       .from('orders')
       .insert({
+        company_id: companyId,
         order_number: order.orderNumber,
         order_type: order.orderType,
-        customer_id: order.customer.id,
+        customer_id: order.customer?.id || null,
         watch_id: order.product.id,
         sale_price: order.salePrice,
         payment_method: order.paymentMethod,
@@ -348,7 +364,7 @@ export const orderService = {
       id: data.id,
       orderNumber: data.order_number,
       orderType: data.order_type,
-      customer: {
+      customer: data.customer ? {
         id: data.customer.id,
         firstName: data.customer.first_name,
         lastName: data.customer.last_name,
@@ -358,8 +374,9 @@ export const orderService = {
         address2: data.customer.address2,
         city: data.customer.city,
         postcode: data.customer.postcode,
-        country: data.customer.country
-      },
+        country: data.customer.country,
+        dateAdded: data.customer.date_added || new Date().toISOString()
+      } : null,
       watch: {
         id: data.product.id,
         brand: data.product.brand,

@@ -11,7 +11,7 @@ import {
   Squares2X2Icon,
   TableCellsIcon
 } from '@heroicons/react/24/outline'
-import useAppStore from '@/store/useAppStore'
+import { useSupabaseStore } from '@/store/useSupabaseStore'
 import { formatCurrency, formatDate } from '@/utils/format'
 import clsx from 'clsx'
 
@@ -23,7 +23,7 @@ const statusColors = {
 }
 
 export default function StockPage() {
-  const { watchProducts, openModal } = useAppStore()
+  const { watchProducts, openModal } = useSupabaseStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [viewMode, setViewMode] = useState<'card' | 'table'>('card')
   const [statusFilter, setStatusFilter] = useState<'all' | 'available' | 'stock' | 'consignment' | 'sold'>('all')

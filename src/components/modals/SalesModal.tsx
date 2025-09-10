@@ -15,13 +15,13 @@ import {
   PlusIcon
 } from '@heroicons/react/24/outline'
 import BaseModal from './BaseModal'
-import useAppStore from '@/store/useAppStore'
+import { useSupabaseStore } from '@/store/useSupabaseStore'
 import { formatCurrency, formatDate, generateId } from '@/utils/format'
 import type { WatchProduct, Customer, Order } from '@/types'
 import clsx from 'clsx'
 
 export default function SalesModal() {
-  const { modals, closeModal, customers, addOrder, updateWatchProduct } = useAppStore()
+  const { modals, closeModal, customers, addOrder, updateWatchProduct } = useSupabaseStore()
   const product = modals.data?.product as WatchProduct
   
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
@@ -198,7 +198,7 @@ export default function SalesModal() {
               {/* Add New Customer */}
               <div className="pt-4 border-t border-gray-200">
                 <button
-                  onClick={() => useAppStore.getState().openModal('customer')}
+                  onClick={() => useSupabaseStore.getState().openModal('customer')}
                   className="flex items-center space-x-2 text-apple-blue hover:text-blue-700 font-medium"
                 >
                   <PlusIcon className="w-4 h-4" />
