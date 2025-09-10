@@ -7,7 +7,7 @@ import Sidebar from './Sidebar'
 import Header from './Header'
 import ModalManager from '../modals/ModalManager'
 import BorderBeam from '@/components/BorderBeam'
-import useAppStore from '@/store/useAppStore'
+import { useSupabaseStore } from '@/store/useSupabaseStore'
 import clsx from 'clsx'
 
 interface DashboardLayoutProps {
@@ -16,12 +16,7 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const { sidebarCollapsed, initializeSampleData } = useAppStore()
-
-  // Initialize sample data on mount
-  useEffect(() => {
-    initializeSampleData()
-  }, [initializeSampleData])
+  const { sidebarCollapsed } = useSupabaseStore()
 
   return (
     <div className="h-screen flex bg-blue-600 p-1.5">
@@ -95,7 +90,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             {/* Content */}
             <main className="flex-1 overflow-y-auto overflow-x-hidden p-6 lg:p-8 min-h-0">
               <motion.div
-                key={useAppStore.getState().currentPage}
+                key={useSupabaseStore.getState().currentPage}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
@@ -115,7 +110,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
            style={{left: sidebarCollapsed ? '57px' : '247px'}}>
         <div className="w-10 h-10 bg-white rounded-full shadow-xl flex items-center justify-center">
           <button
-            onClick={() => useAppStore.getState().toggleSidebar()}
+            onClick={() => useSupabaseStore.getState().toggleSidebar()}
             className="w-8 h-8 bg-blue-600 rounded-full shadow-lg border-2 border-white flex items-center justify-center hover:shadow-xl hover:bg-blue-700 transition-all duration-300 group"
           >
             <ChevronLeftIcon 

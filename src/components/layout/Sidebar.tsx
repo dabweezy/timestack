@@ -12,7 +12,7 @@ import {
   ClockIcon,
   UserIcon
 } from '@heroicons/react/24/outline'
-import useAppStore from '@/store/useAppStore'
+import { useSupabaseStore } from '@/store/useSupabaseStore'
 import type { NavigationPage } from '@/types'
 import clsx from 'clsx'
 
@@ -30,7 +30,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProps) {
-  const { currentPage, sidebarCollapsed, setCurrentPage, toggleSidebar } = useAppStore()
+  const { currentPage, sidebarCollapsed, setCurrentPage, toggleSidebar } = useSupabaseStore()
   const [showStatusTooltip, setShowStatusTooltip] = useState(false)
 
   const handleNavClick = (page: NavigationPage) => {

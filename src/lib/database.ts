@@ -1,0 +1,409 @@
+import { supabase } from './supabase'
+import type { Customer, WatchProduct, Order } from '@/types'
+
+// Customer operations
+export const customerService = {
+  async getAll(): Promise<Customer[]> {
+    const { data, error } = await supabase
+      .from('customers')
+      .select('*')
+      .order('created_at', { ascending: false })
+    
+    if (error) throw error
+    
+    return data?.map(customer => ({
+      id: customer.id,
+      firstName: customer.first_name,
+      lastName: customer.last_name,
+      email: customer.email,
+      mobile: customer.mobile,
+      address1: customer.address1,
+      address2: customer.address2,
+      city: customer.city,
+      postcode: customer.postcode,
+      country: customer.country,
+      dateAdded: customer.created_at
+    })) || []
+  },
+
+  async create(customer: Omit<Customer, 'id'>): Promise<Customer> {
+    const { data, error } = await supabase
+      .from('customers')
+      .insert({
+        first_name: customer.firstName,
+        last_name: customer.lastName,
+        email: customer.email,
+        mobile: customer.mobile,
+        address1: customer.address1,
+        address2: customer.address2,
+        city: customer.city,
+        postcode: customer.postcode,
+        country: customer.country
+      })
+      .select()
+      .single()
+    
+    if (error) throw error
+    
+    return {
+      id: data.id,
+      firstName: data.first_name,
+      lastName: data.last_name,
+      email: data.email,
+      mobile: data.mobile,
+      address1: data.address1,
+      address2: data.address2,
+      city: data.city,
+      postcode: data.postcode,
+      country: data.country,
+      dateAdded: data.created_at
+    }
+  },
+
+  async update(id: string, updates: Partial<Customer>): Promise<Customer> {
+    const { data, error } = await supabase
+      .from('customers')
+      .update({
+        first_name: updates.firstName,
+        last_name: updates.lastName,
+        email: updates.email,
+        mobile: updates.mobile,
+        address1: updates.address1,
+        address2: updates.address2,
+        city: updates.city,
+        postcode: updates.postcode,
+        country: updates.country,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .select()
+      .single()
+    
+    if (error) throw error
+    
+    return {
+      id: data.id,
+      firstName: data.first_name,
+      lastName: data.last_name,
+      email: data.email,
+      mobile: data.mobile,
+      address1: data.address1,
+      address2: data.address2,
+      city: data.city,
+      postcode: data.postcode,
+      country: data.country,
+      dateAdded: data.created_at
+    }
+  },
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('customers')
+      .delete()
+      .eq('id', id)
+    
+    if (error) throw error
+  }
+}
+
+// Product operations
+export const productService = {
+  async getAll(): Promise<WatchProduct[]> {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false })
+    
+    if (error) throw error
+    
+    return data?.map(product => ({
+      id: product.id,
+      brand: product.brand,
+      model: product.model,
+      reference: product.reference,
+      serial: product.serial,
+      material: product.material,
+      dialColor: product.dial_color,
+      condition: product.condition,
+      yearManufactured: product.year_manufactured,
+      set: product.set,
+      costPrice: product.cost_price,
+      tradePrice: product.trade_price,
+      retailPrice: product.retail_price,
+      description: product.description,
+      dateAdded: product.date_added,
+      status: product.status,
+      assignedCustomer: product.assigned_customer
+    })) || []
+  },
+
+  async create(product: Omit<WatchProduct, 'id'>): Promise<WatchProduct> {
+    const { data, error } = await supabase
+      .from('products')
+      .insert({
+        brand: product.brand,
+        model: product.model,
+        reference: product.reference,
+        serial: product.serial,
+        material: product.material,
+        dial_color: product.dialColor,
+        condition: product.condition,
+        year_manufactured: product.yearManufactured,
+        set: product.set,
+        cost_price: product.costPrice,
+        trade_price: product.tradePrice,
+        retail_price: product.retailPrice,
+        description: product.description,
+        date_added: product.dateAdded,
+        status: product.status,
+        assigned_customer: product.assignedCustomer
+      })
+      .select()
+      .single()
+    
+    if (error) throw error
+    
+    return {
+      id: data.id,
+      brand: data.brand,
+      model: data.model,
+      reference: data.reference,
+      serial: data.serial,
+      material: data.material,
+      dialColor: data.dial_color,
+      condition: data.condition,
+      yearManufactured: data.year_manufactured,
+      set: data.set,
+      costPrice: data.cost_price,
+      tradePrice: data.trade_price,
+      retailPrice: data.retail_price,
+      description: data.description,
+      dateAdded: data.date_added,
+      status: data.status,
+      assignedCustomer: data.assigned_customer
+    }
+  },
+
+  async update(id: string, updates: Partial<WatchProduct>): Promise<WatchProduct> {
+    const { data, error } = await supabase
+      .from('products')
+      .update({
+        brand: updates.brand,
+        model: updates.model,
+        reference: updates.reference,
+        serial: updates.serial,
+        material: updates.material,
+        dial_color: updates.dialColor,
+        condition: updates.condition,
+        year_manufactured: updates.yearManufactured,
+        set: updates.set,
+        cost_price: updates.costPrice,
+        trade_price: updates.tradePrice,
+        retail_price: updates.retailPrice,
+        description: updates.description,
+        date_added: updates.dateAdded,
+        status: updates.status,
+        assigned_customer: updates.assignedCustomer,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .select()
+      .single()
+    
+    if (error) throw error
+    
+    return {
+      id: data.id,
+      brand: data.brand,
+      model: data.model,
+      reference: data.reference,
+      serial: data.serial,
+      material: data.material,
+      dialColor: data.dial_color,
+      condition: data.condition,
+      yearManufactured: data.year_manufactured,
+      set: data.set,
+      costPrice: data.cost_price,
+      tradePrice: data.trade_price,
+      retailPrice: data.retail_price,
+      description: data.description,
+      dateAdded: data.date_added,
+      status: data.status,
+      assignedCustomer: data.assigned_customer
+    }
+  },
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', id)
+    
+    if (error) throw error
+  }
+}
+
+// Order operations
+export const orderService = {
+  async getAll(): Promise<Order[]> {
+    const { data, error } = await supabase
+      .from('orders')
+      .select(`
+        *,
+        customer:customers(*),
+        product:products(*)
+      `)
+      .order('created_at', { ascending: false })
+    
+    if (error) throw error
+    
+    return data?.map(order => ({
+      id: order.id,
+      orderNumber: order.order_number,
+      orderType: order.order_type,
+      customer: {
+        id: order.customer.id,
+        firstName: order.customer.first_name,
+        lastName: order.customer.last_name,
+        email: order.customer.email,
+        mobile: order.customer.mobile,
+        address1: order.customer.address1,
+        address2: order.customer.address2,
+        city: order.customer.city,
+        postcode: order.customer.postcode,
+        country: order.customer.country
+      },
+      watch: {
+        id: order.product.id,
+        brand: order.product.brand,
+        model: order.product.model,
+        reference: order.product.reference,
+        serial: order.product.serial,
+        material: order.product.material,
+        dialColor: order.product.dial_color,
+        condition: order.product.condition,
+        yearManufactured: order.product.year_manufactured,
+        set: order.product.set,
+        costPrice: order.product.cost_price,
+        tradePrice: order.product.trade_price,
+        retailPrice: order.product.retail_price,
+        description: order.product.description,
+        dateAdded: order.product.date_added,
+        status: order.product.status,
+        assignedCustomer: order.product.assigned_customer
+      },
+      product: {
+        id: order.product.id,
+        brand: order.product.brand,
+        model: order.product.model,
+        reference: order.product.reference,
+        serial: order.product.serial,
+        material: order.product.material,
+        dialColor: order.product.dial_color,
+        condition: order.product.condition,
+        yearManufactured: order.product.year_manufactured,
+        set: order.product.set,
+        costPrice: order.product.cost_price,
+        tradePrice: order.product.trade_price,
+        retailPrice: order.product.retail_price,
+        description: order.product.description,
+        dateAdded: order.product.date_added,
+        status: order.product.status,
+        assignedCustomer: order.product.assigned_customer
+      },
+      salePrice: order.sale_price,
+      paymentMethod: order.payment_method,
+      status: order.status,
+      date: order.date,
+      timestamp: order.timestamp,
+      notes: order.notes
+    })) || []
+  },
+
+  async create(order: Omit<Order, 'id'>): Promise<Order> {
+    const { data, error } = await supabase
+      .from('orders')
+      .insert({
+        order_number: order.orderNumber,
+        order_type: order.orderType,
+        customer_id: order.customer.id,
+        product_id: order.product.id,
+        sale_price: order.salePrice,
+        payment_method: order.paymentMethod,
+        status: order.status,
+        date: order.date,
+        timestamp: order.timestamp,
+        notes: order.notes
+      })
+      .select(`
+        *,
+        customer:customers(*),
+        product:products(*)
+      `)
+      .single()
+    
+    if (error) throw error
+    
+    return {
+      id: data.id,
+      orderNumber: data.order_number,
+      orderType: data.order_type,
+      customer: {
+        id: data.customer.id,
+        firstName: data.customer.first_name,
+        lastName: data.customer.last_name,
+        email: data.customer.email,
+        mobile: data.customer.mobile,
+        address1: data.customer.address1,
+        address2: data.customer.address2,
+        city: data.customer.city,
+        postcode: data.customer.postcode,
+        country: data.customer.country
+      },
+      watch: {
+        id: data.product.id,
+        brand: data.product.brand,
+        model: data.product.model,
+        reference: data.product.reference,
+        serial: data.product.serial,
+        material: data.product.material,
+        dialColor: data.product.dial_color,
+        condition: data.product.condition,
+        yearManufactured: data.product.year_manufactured,
+        set: data.product.set,
+        costPrice: data.product.cost_price,
+        tradePrice: data.product.trade_price,
+        retailPrice: data.product.retail_price,
+        description: data.product.description,
+        dateAdded: data.product.date_added,
+        status: data.product.status,
+        assignedCustomer: data.product.assigned_customer
+      },
+      product: {
+        id: data.product.id,
+        brand: data.product.brand,
+        model: data.product.model,
+        reference: data.product.reference,
+        serial: data.product.serial,
+        material: data.product.material,
+        dialColor: data.product.dial_color,
+        condition: data.product.condition,
+        yearManufactured: data.product.year_manufactured,
+        set: data.product.set,
+        costPrice: data.product.cost_price,
+        tradePrice: data.product.trade_price,
+        retailPrice: data.product.retail_price,
+        description: data.product.description,
+        dateAdded: data.product.date_added,
+        status: data.product.status,
+        assignedCustomer: data.product.assigned_customer
+      },
+      salePrice: data.sale_price,
+      paymentMethod: data.payment_method,
+      status: data.status,
+      date: data.date,
+      timestamp: data.timestamp,
+      notes: data.notes
+    }
+  }
+}
