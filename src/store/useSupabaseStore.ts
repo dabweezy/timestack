@@ -235,5 +235,25 @@ export const useSupabaseStore = create<SupabaseStore>((set, get) => ({
   initializeSampleData: () => {
     // This is a fallback - in production, you'd want to handle this differently
     console.log('Using fallback sample data - Supabase not available')
+  },
+
+  // Authentication
+  signOut: async () => {
+    try {
+      const { supabase } = await import('@/lib/supabase')
+      await supabase.auth.signOut()
+      // Clear the store state
+      set({
+        customers: [],
+        watchProducts: [],
+        orders: [],
+        user: { name: '', email: '', role: '' },
+        loading: false,
+        error: null
+      })
+    } catch (error) {
+      console.error('Error signing out:', error)
+      throw error
+    }
   }
 }))

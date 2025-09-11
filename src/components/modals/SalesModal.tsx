@@ -75,13 +75,17 @@ export default function SalesModal() {
       }
 
       // Add order to store
-      addOrder(order)
+      console.log('🔄 SalesModal: Creating order...', order)
+      const createdOrder = await addOrder(order)
+      console.log('✅ SalesModal: Order created successfully', createdOrder)
 
       // Update product to mark as sold
-      updateWatchProduct(product.id, { 
+      console.log('🔄 SalesModal: Updating product status to sold...', product.id)
+      const updatedProduct = await updateWatchProduct(product.id, { 
         assignedCustomer: selectedCustomer.id,
         status: 'sold' 
       })
+      console.log('✅ SalesModal: Product updated successfully', updatedProduct)
 
       // Show success message
       alert(`Sale completed! Order #${order.orderNumber}`)

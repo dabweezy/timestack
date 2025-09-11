@@ -60,10 +60,12 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
   const hasFiles = files.length > 0 || existingImage
 
+  const rootProps = getRootProps()
+
   return (
     <div className={`w-full ${className}`}>
       <motion.div
-        {...getRootProps()}
+        {...(rootProps as any)}
         className={`
           relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-200
           ${isDragActive 

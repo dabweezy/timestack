@@ -78,7 +78,7 @@ export default function StockModal() {
         yearManufactured: product.yearManufactured ? product.yearManufactured.toString() : '',
         set: product.set || '',
         costPrice: product.costPrice ? product.costPrice.toString() : '',
-        stockType: product.condition === 'Very Good' ? 'consignment' : 'stock',
+        stockType: product.status === 'consignment' ? 'consignment' : 'stock',
         description: product.description || '',
         images: [],
         generateReceipt: false,

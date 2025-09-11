@@ -183,7 +183,7 @@ export default function DashboardPage() {
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">{order.orderNumber}</p>
-                          <p className="text-sm text-gray-500">{order.customer.firstName} {order.customer.lastName}</p>
+                          <p className="text-sm text-gray-500">{order.customer ? `${order.customer.firstName} ${order.customer.lastName}` : 'No Customer'}</p>
                         </div>
                       </div>
                       <div className="text-right">

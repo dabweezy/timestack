@@ -42,7 +42,7 @@ export default function OrdersPage() {
   const filteredOrders = orders.filter(order => {
     const matchesSearch = 
       order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      `${order.customer.firstName} ${order.customer.lastName}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (order.customer ? `${order.customer.firstName} ${order.customer.lastName}` : '').toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.watch.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.watch.model.toLowerCase().includes(searchQuery.toLowerCase())
     
@@ -264,7 +264,7 @@ export default function OrdersPage() {
                           </span>
                         </div>
                         <div className="text-sm text-gray-500 mt-1">
-                          <span className="font-medium">{order.customer.firstName} {order.customer.lastName}</span> • 
+                          <span className="font-medium">{order.customer ? `${order.customer.firstName} ${order.customer.lastName}` : 'No Customer'}</span> • 
                           <span className="ml-1">{order.watch.brand} {order.watch.model}</span>
                         </div>
                       </div>

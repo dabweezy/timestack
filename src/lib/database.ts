@@ -256,7 +256,7 @@ export const productService = {
       description: product.description,
       dateAdded: product.date_added,
       status: product.status,
-      assignedCustomer: product.assigned_customer
+      assignedCustomer: product.assigned_customer_id
     })) || []
   },
 
@@ -289,7 +289,7 @@ export const productService = {
         description: product.description,
         date_added: product.dateAdded || new Date().toISOString(),
         status: product.status,
-        assigned_customer: product.assignedCustomer
+        assigned_customer_id: product.assignedCustomer
       })
       .select()
       .single()
@@ -318,7 +318,7 @@ export const productService = {
       description: data.description,
       dateAdded: data.date_added,
       status: data.status,
-      assignedCustomer: data.assigned_customer
+      assignedCustomer: data.assigned_customer_id
     }
   },
 
@@ -341,7 +341,7 @@ export const productService = {
         description: updates.description,
         date_added: updates.dateAdded,
         status: updates.status,
-        assigned_customer: updates.assignedCustomer,
+        assigned_customer_id: updates.assignedCustomer,
         updated_at: new Date().toISOString()
       })
       .eq('id', id)
@@ -367,7 +367,7 @@ export const productService = {
       description: data.description,
       dateAdded: data.date_added,
       status: data.status,
-      assignedCustomer: data.assigned_customer
+      assignedCustomer: data.assigned_customer_id
     }
   },
 
@@ -476,7 +476,7 @@ export const orderService = {
         company_id: companyId,
         order_number: order.orderNumber,
         order_type: order.orderType,
-        customer_id: order.customer?.id || null,
+        customer_id: order.customer?.id,
         watch_id: order.product.id,
         sale_price: order.salePrice,
         payment_method: order.paymentMethod,
@@ -518,42 +518,42 @@ export const orderService = {
         dateAdded: data.customer.date_added || new Date().toISOString()
       } : null,
       watch: {
-        id: data.product.id,
-        brand: data.product.brand,
-        model: data.product.model,
-        reference: data.product.reference,
-        serial: data.product.serial,
-        material: data.product.material,
-        dialColor: data.product.dial_color,
-        condition: data.product.condition,
-        yearManufactured: data.product.year_manufactured,
-        set: data.product.set_type,
-        costPrice: data.product.cost_price,
-        tradePrice: data.product.trade_price,
-        retailPrice: data.product.retail_price,
-        description: data.product.description,
-        dateAdded: data.product.date_added,
-        status: data.product.status,
-        assignedCustomer: data.product.assigned_customer
+        id: data.watch.id,
+        brand: data.watch.brand,
+        model: data.watch.model,
+        reference: data.watch.reference,
+        serial: data.watch.serial,
+        material: data.watch.material,
+        dialColor: data.watch.dial_color,
+        condition: data.watch.condition,
+        yearManufactured: data.watch.year_manufactured,
+        set: data.watch.set_type,
+        costPrice: data.watch.cost_price,
+        tradePrice: data.watch.trade_price,
+        retailPrice: data.watch.retail_price,
+        description: data.watch.description,
+        dateAdded: data.watch.date_added,
+        status: data.watch.status,
+        assignedCustomer: data.watch.assigned_customer
       },
       product: {
-        id: data.product.id,
-        brand: data.product.brand,
-        model: data.product.model,
-        reference: data.product.reference,
-        serial: data.product.serial,
-        material: data.product.material,
-        dialColor: data.product.dial_color,
-        condition: data.product.condition,
-        yearManufactured: data.product.year_manufactured,
-        set: data.product.set_type,
-        costPrice: data.product.cost_price,
-        tradePrice: data.product.trade_price,
-        retailPrice: data.product.retail_price,
-        description: data.product.description,
-        dateAdded: data.product.date_added,
-        status: data.product.status,
-        assignedCustomer: data.product.assigned_customer
+        id: data.watch.id,
+        brand: data.watch.brand,
+        model: data.watch.model,
+        reference: data.watch.reference,
+        serial: data.watch.serial,
+        material: data.watch.material,
+        dialColor: data.watch.dial_color,
+        condition: data.watch.condition,
+        yearManufactured: data.watch.year_manufactured,
+        set: data.watch.set_type,
+        costPrice: data.watch.cost_price,
+        tradePrice: data.watch.trade_price,
+        retailPrice: data.watch.retail_price,
+        description: data.watch.description,
+        dateAdded: data.watch.date_added,
+        status: data.watch.status,
+        assignedCustomer: data.watch.assigned_customer
       },
       salePrice: data.sale_price,
       paymentMethod: data.payment_method,

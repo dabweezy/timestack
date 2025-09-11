@@ -325,7 +325,7 @@ export default function ProductDetailsModal() {
                           {order.orderType === 'sale' ? 'Sale' : 'Purchase'} - {order.orderNumber}
                         </p>
                         <p className="text-sm text-gray-500">
-                          {order.customer.firstName} {order.customer.lastName} • {formatDate(order.timestamp)}
+                          {order.customer ? `${order.customer.firstName} ${order.customer.lastName}` : 'No Customer'} • {formatDate(order.timestamp)}
                         </p>
                       </div>
                     </div>
