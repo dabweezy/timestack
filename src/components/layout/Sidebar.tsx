@@ -140,8 +140,19 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
         <div className="mt-auto p-4 border-t border-blue-500/20">
           <button
             onClick={async () => {
-              const { error } = await supabase.auth.signOut()
-              if (error) console.error('Error signing out:', error)
+              console.log('🔄 Signing out...')
+              try {
+                const { error } = await supabase.auth.signOut()
+                if (error) {
+                  console.error('❌ Error signing out:', error)
+                } else {
+                  console.log('✅ Signed out successfully')
+                  // Force page reload to show login page
+                  window.location.reload()
+                }
+              } catch (err) {
+                console.error('❌ Sign out error:', err)
+              }
             }}
             className="w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 hover:bg-red-500/10 group"
           >

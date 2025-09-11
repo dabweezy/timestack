@@ -57,6 +57,7 @@ export interface Order {
   status: 'pending' | 'processing' | 'completed' | 'cancelled'
   date: string
   timestamp: string
+  paymentDueDate?: string
   notes?: string
 }
 
@@ -107,6 +108,8 @@ export interface StockForm {
   stockType: 'stock' | 'consignment'
   description: string
   images: File[]
+  generateReceipt: boolean
+  paymentDueDate: string
 }
 
 export interface CustomerForm {

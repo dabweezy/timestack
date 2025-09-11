@@ -57,7 +57,8 @@ export const generateOrderReceipt = (order: Order): void => {
   // Order Details Box
   pdf.setDrawColor(230, 230, 230)
   pdf.setFillColor(248, 248, 248)
-  pdf.rect(15, yPosition, pageWidth - 30, 40, 'FD')
+  const boxHeight = order.paymentDueDate ? 50 : 40
+  pdf.rect(15, yPosition, pageWidth - 30, boxHeight, 'FD')
   
   pdf.setFontSize(10)
   pdf.setTextColor(grayColor)
@@ -66,16 +67,22 @@ export const generateOrderReceipt = (order: Order): void => {
   pdf.text('Time:', 20, yPosition + 30)
   pdf.text('Status:', 120, yPosition + 10)
   pdf.text('Type:', 120, yPosition + 20)
+  if (order.paymentDueDate) {
+    pdf.text('Payment Due:', 120, yPosition + 30)
+  }
   
   pdf.setTextColor(darkColor)
   pdf.setFontSize(11)
   pdf.text(order.orderNumber, 65, yPosition + 10)
   pdf.text(formatDate(order.date), 65, yPosition + 20)
-  pdf.text(order.time, 65, yPosition + 30)
+  pdf.text(new Date(order.timestamp).toLocaleTimeString(), 65, yPosition + 30)
   pdf.text(order.status, 145, yPosition + 10)
   pdf.text(order.orderType.toUpperCase(), 145, yPosition + 20)
+  if (order.paymentDueDate) {
+    pdf.text(formatDate(order.paymentDueDate), 145, yPosition + 30)
+  }
   
-  yPosition += 60
+  yPosition += boxHeight + 20
 
   // Customer Information
   pdf.setFontSize(14)
@@ -96,13 +103,18 @@ export const generateOrderReceipt = (order: Order): void => {
   
   pdf.setTextColor(darkColor)
   pdf.setFontSize(11)
-  pdf.text(order.customer.name, 50, yPosition)
-  pdf.text(order.customer.email, 50, yPosition + 10)
-  pdf.text(order.customer.phone, 50, yPosition + 20)
-  
-  // Split address into multiple lines if needed
-  const addressLines = pdf.splitTextToSize(order.customer.address, pageWidth - 70)
-  pdf.text(addressLines, 50, yPosition + 30)
+  if (order.customer) {
+    pdf.text(`${order.customer.firstName} ${order.customer.lastName}`, 50, yPosition)
+    pdf.text(order.customer.email, 50, yPosition + 10)
+    pdf.text(order.customer.mobile || 'N/A', 50, yPosition + 20)
+    
+    // Split address into multiple lines if needed
+    const address = `${order.customer.address1 || ''} ${order.customer.address2 || ''} ${order.customer.city || ''} ${order.customer.postcode || ''}`.trim()
+    const addressLines = pdf.splitTextToSize(address || 'No address provided', pageWidth - 70)
+    pdf.text(addressLines, 50, yPosition + 30)
+  } else {
+    pdf.text('No customer assigned', 50, yPosition)
+  }
   
   yPosition += 60
 
@@ -163,48 +175,46 @@ export const generateOrderReceipt = (order: Order): void => {
   pdf.setTextColor(grayColor)
   
   if (order.orderType === 'sale') {
-    if (order.pricing.costPrice) {
+    if (order.watch.costPrice) {
       pdf.text('Cost Price:', 20, yPosition + 10)
-      pdf.text(order.pricing.costPrice, pageWidth - 50, yPosition + 10, { align: 'right' })
+      pdf.text(formatCurrency(order.watch.costPrice), pageWidth - 50, yPosition + 10, { align: 'right' })
     }
     pdf.text('Sale Price:', 20, yPosition + 20)
     pdf.setFontSize(16)
     pdf.setTextColor(primaryColor)
-    pdf.text(order.pricing.salePrice || '£0.00', pageWidth - 50, yPosition + 20, { align: 'right' })
+    pdf.text(formatCurrency(order.salePrice), pageWidth - 50, yPosition + 20, { align: 'right' })
   } else {
     pdf.text('Purchase Price:', 20, yPosition + 15)
     pdf.setFontSize(16)
     pdf.setTextColor(primaryColor)
-    pdf.text(order.pricing.costPrice, pageWidth - 50, yPosition + 15, { align: 'right' })
+    pdf.text(formatCurrency(order.salePrice), pageWidth - 50, yPosition + 15, { align: 'right' })
   }
   
   yPosition += 50
 
   // Payment Information
-  if (order.payment) {
-    pdf.setFontSize(14)
-    pdf.setTextColor(darkColor)
-    pdf.text('PAYMENT INFORMATION', 15, yPosition)
-    yPosition += 15
-    
-    pdf.setDrawColor(230, 230, 230)
-    pdf.line(15, yPosition, pageWidth - 15, yPosition)
-    yPosition += 10
-    
-    pdf.setFontSize(10)
-    pdf.setTextColor(grayColor)
-    pdf.text('Method:', 15, yPosition)
-    pdf.text('Status:', 15, yPosition + 10)
-    pdf.text('Reference:', 15, yPosition + 20)
-    
-    pdf.setTextColor(darkColor)
-    pdf.setFontSize(11)
-    pdf.text(order.payment.method, 60, yPosition)
-    pdf.text(order.payment.status, 60, yPosition + 10)
-    pdf.text(order.payment.reference, 60, yPosition + 20)
-    
-    yPosition += 40
-  }
+  pdf.setFontSize(14)
+  pdf.setTextColor(darkColor)
+  pdf.text('PAYMENT INFORMATION', 15, yPosition)
+  yPosition += 15
+  
+  pdf.setDrawColor(230, 230, 230)
+  pdf.line(15, yPosition, pageWidth - 15, yPosition)
+  yPosition += 10
+  
+  pdf.setFontSize(10)
+  pdf.setTextColor(grayColor)
+  pdf.text('Method:', 15, yPosition)
+  pdf.text('Status:', 15, yPosition + 10)
+  pdf.text('Reference:', 15, yPosition + 20)
+  
+  pdf.setTextColor(darkColor)
+  pdf.setFontSize(11)
+  pdf.text(order.paymentMethod, 60, yPosition)
+  pdf.text(order.status, 60, yPosition + 10)
+  pdf.text(order.orderNumber, 60, yPosition + 20)
+  
+  yPosition += 40
 
   // Footer
   const footerY = pageHeight - 60
@@ -574,23 +584,27 @@ export const generateSalesReceipt = (order: Order): void => {
   // Customer address
   pdf.setFont('helvetica', 'normal')
   pdf.setFontSize(11)
-  const customerAddress = [
-    `${order.customer.firstName} ${order.customer.lastName}`,
-    order.customer.address1,
-    order.customer.city,
-    order.customer.country
-  ].filter(Boolean)
-  
-  customerAddress.forEach((line, index) => {
-    pdf.text(line, 20, yPosition + 10 + (index * 5))
-  })
-  
-  // Contact info
-  if (order.customer.email) {
-    pdf.text(`Email: ${order.customer.email}`, 20, yPosition + 10 + (customerAddress.length * 5) + 5)
-  }
-  if (order.customer.mobile) {
-    pdf.text(`Phone: ${order.customer.mobile}`, 20, yPosition + 10 + (customerAddress.length * 5) + 10)
+  if (order.customer) {
+    const customerAddress = [
+      `${order.customer.firstName} ${order.customer.lastName}`,
+      order.customer.address1,
+      order.customer.city,
+      order.customer.country
+    ].filter(Boolean)
+    
+    customerAddress.forEach((line, index) => {
+      pdf.text(line, 20, yPosition + 10 + (index * 5))
+    })
+    
+    // Contact info
+    if (order.customer.email) {
+      pdf.text(`Email: ${order.customer.email}`, 20, yPosition + 10 + (customerAddress.length * 5) + 5)
+    }
+    if (order.customer.mobile) {
+      pdf.text(`Phone: ${order.customer.mobile}`, 20, yPosition + 10 + (customerAddress.length * 5) + 10)
+    }
+  } else {
+    pdf.text('No customer assigned', 20, yPosition + 10)
   }
   
   // Company address (right side)

@@ -27,7 +27,11 @@ const CountingNumber: React.FC<CountingNumberProps> = ({
   })
   
   const display = useTransform(spring, (current) => {
-    return current.toFixed(decimalPlaces)
+    // Use toLocaleString for proper number formatting with commas
+    return current.toLocaleString('en-US', {
+      minimumFractionDigits: decimalPlaces,
+      maximumFractionDigits: decimalPlaces
+    })
   })
 
   useEffect(() => {

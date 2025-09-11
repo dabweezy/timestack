@@ -44,6 +44,29 @@ interface SupabaseStore {
   
   // Initialize sample data (fallback)
   initializeSampleData: () => void
+  
+  // Authentication
+  signOut: () => Promise<void>
+}
+
+// Get initial page from localStorage or default to dashboard
+const getInitialPage = (): NavigationPage => {
+  if (typeof window !== 'undefined') {
+    const savedPage = localStorage.getItem('timestack-current-page')
+    if (savedPage && ['dashboard', 'customers', 'stock', 'sales', 'orders', 'profile'].includes(savedPage)) {
+      return savedPage as NavigationPage
+    }
+  }
+  return 'dashboard'
+}
+
+// Get initial sidebar state from localStorage
+const getInitialSidebarState = (): boolean => {
+  if (typeof window !== 'undefined') {
+    const savedSidebar = localStorage.getItem('timestack-sidebar-collapsed')
+    return savedSidebar === 'true'
+  }
+  return false
 }
 
 export const useSupabaseStore = create<SupabaseStore>((set, get) => ({
@@ -51,8 +74,8 @@ export const useSupabaseStore = create<SupabaseStore>((set, get) => ({
   customers: [],
   watchProducts: [],
   orders: [],
-  currentPage: 'dashboard',
-  sidebarCollapsed: false,
+  currentPage: getInitialPage(),
+  sidebarCollapsed: getInitialSidebarState(),
   modals: { type: null, data: null, isOpen: false },
   user: {
     name: 'Admin User',
@@ -63,8 +86,21 @@ export const useSupabaseStore = create<SupabaseStore>((set, get) => ({
   error: null,
 
   // UI actions
-  setCurrentPage: (page) => set({ currentPage: page }),
-  toggleSidebar: () => set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
+  setCurrentPage: (page) => {
+    set({ currentPage: page })
+    // Save to localStorage for persistence
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('timestack-current-page', page)
+    }
+  },
+  toggleSidebar: () => set((state) => {
+    const newState = !state.sidebarCollapsed
+    // Save to localStorage for persistence
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('timestack-sidebar-collapsed', newState.toString())
+    }
+    return { sidebarCollapsed: newState }
+  }),
   openModal: (type, data) => set({ modals: { type, data, isOpen: true } }),
   closeModal: () => set({ modals: { type: null, data: null, isOpen: false } }),
 
@@ -145,11 +181,14 @@ export const useSupabaseStore = create<SupabaseStore>((set, get) => ({
   // Product actions
   addWatchProduct: async (product) => {
     try {
+      console.log('🔄 Store: Adding product...', product)
       const newProduct = await productService.create(product)
+      console.log('✅ Store: Product created, updating state...', newProduct)
       set((state) => ({ watchProducts: [newProduct, ...state.watchProducts] }))
+      console.log('✅ Store: State updated successfully')
       return newProduct
     } catch (error) {
-      console.error('Error adding product:', error)
+      console.error('❌ Store: Error adding product:', error)
       throw error
     }
   },
@@ -180,11 +219,14 @@ export const useSupabaseStore = create<SupabaseStore>((set, get) => ({
   // Order actions
   addOrder: async (order) => {
     try {
+      console.log('🔄 Store: Adding order...', order)
       const newOrder = await orderService.create(order)
+      console.log('✅ Store: Order created, updating state...', newOrder)
       set((state) => ({ orders: [newOrder, ...state.orders] }))
+      console.log('✅ Store: Order state updated successfully')
       return newOrder
     } catch (error) {
-      console.error('Error adding order:', error)
+      console.error('❌ Store: Error adding order:', error)
       throw error
     }
   },

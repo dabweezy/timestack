@@ -265,6 +265,11 @@ export const productService = {
     const { data: { user } } = await supabase.auth.getUser()
     const companyId = user?.user_metadata?.company_id || '550e8400-e29b-41d4-a716-446655440001' // Default company
     
+    console.log('🔍 Product creation debug:')
+    console.log('- User:', user ? 'authenticated' : 'not authenticated')
+    console.log('- Company ID:', companyId)
+    console.log('- Product data:', product)
+    
     const { data, error } = await supabase
       .from('watches')
       .insert({
@@ -282,14 +287,19 @@ export const productService = {
         trade_price: product.tradePrice,
         retail_price: product.retailPrice,
         description: product.description,
-        date_added: product.dateAdded,
+        date_added: product.dateAdded || new Date().toISOString(),
         status: product.status,
         assigned_customer: product.assignedCustomer
       })
       .select()
       .single()
     
-    if (error) throw error
+    if (error) {
+      console.error('❌ Product creation error:', error)
+      throw error
+    }
+    
+    console.log('✅ Product created successfully:', data.id)
     
     return {
       id: data.id,
@@ -445,6 +455,7 @@ export const orderService = {
       status: order.status,
       date: order.date,
       timestamp: order.timestamp,
+      paymentDueDate: order.payment_due_date,
       notes: order.notes
     })) || []
   },
@@ -453,6 +464,11 @@ export const orderService = {
     // Get current user's company_id from JWT
     const { data: { user } } = await supabase.auth.getUser()
     const companyId = user?.user_metadata?.company_id || '550e8400-e29b-41d4-a716-446655440001' // Default company
+    
+    console.log('🔍 Order creation debug:')
+    console.log('- User:', user ? 'authenticated' : 'not authenticated')
+    console.log('- Company ID:', companyId)
+    console.log('- Order data:', order)
     
     const { data, error } = await supabase
       .from('orders')
@@ -467,6 +483,7 @@ export const orderService = {
         status: order.status,
         date: order.date,
         timestamp: order.timestamp,
+        payment_due_date: order.paymentDueDate,
         notes: order.notes
       })
       .select(`
@@ -476,7 +493,12 @@ export const orderService = {
       `)
       .single()
     
-    if (error) throw error
+    if (error) {
+      console.error('❌ Order creation error:', error)
+      throw error
+    }
+    
+    console.log('✅ Order created successfully:', data.id)
     
     return {
       id: data.id,
@@ -538,6 +560,7 @@ export const orderService = {
       status: data.status,
       date: data.date,
       timestamp: data.timestamp,
+      paymentDueDate: data.payment_due_date,
       notes: data.notes
     }
   }

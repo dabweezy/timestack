@@ -52,7 +52,9 @@ export default function StockModal() {
     costPrice: '',
     stockType: 'stock',
     description: '',
-    images: []
+    images: [],
+    generateReceipt: false,
+    paymentDueDate: ''
   })
 
   const [errors, setErrors] = useState<Partial<StockForm>>({})
@@ -78,7 +80,9 @@ export default function StockModal() {
         costPrice: product.costPrice ? product.costPrice.toString() : '',
         stockType: product.condition === 'Very Good' ? 'consignment' : 'stock',
         description: product.description || '',
-        images: []
+        images: [],
+        generateReceipt: false,
+        paymentDueDate: ''
       })
       setAssignedCustomer(product.assignedCustomer || null)
     }
@@ -103,6 +107,7 @@ export default function StockModal() {
     if (!formData.brand.trim()) newErrors.brand = 'Brand is required'
     if (!formData.model.trim()) newErrors.model = 'Model is required'
     if (!formData.reference.trim()) newErrors.reference = 'Reference is required'
+    if (!formData.serial.trim()) newErrors.serial = 'Serial number is required'
     if (!formData.material) newErrors.material = 'Material is required'
     if (!formData.dialColor) newErrors.dialColor = 'Dial color is required'
     if (!formData.condition) newErrors.condition = 'Condition is required'
@@ -137,7 +142,7 @@ export default function StockModal() {
         brand: formData.brand.trim(),
         model: formData.model.trim(),
         reference: formData.reference.trim(),
-        serial: formData.serial?.trim(),
+        serial: formData.serial.trim(),
         material: formData.material,
         dialColor: formData.dialColor,
         condition: formData.condition as WatchProduct['condition'],
@@ -153,32 +158,40 @@ export default function StockModal() {
       }
 
       if (isEditing) {
+        console.log('🔄 StockModal: Updating product...', productData)
         updateWatchProduct(product.id, productData)
       } else {
+        console.log('🔄 StockModal: Adding new product...', productData)
         addWatchProduct(productData)
         
-        // Create a purchase order
-        const purchaseOrder = {
-          id: generateId('order'),
-          orderNumber: `PO-${Date.now()}`,
-          orderType: 'purchase' as const,
-          customer: assignedCustomer ? customers.find(c => c.id === assignedCustomer) || null : null,
-          product: productData,
-          watch: productData,
-          salePrice: productData.costPrice,
-          paymentMethod: 'bank_transfer' as const,
-          status: 'completed' as const,
-          date: new Date().toISOString(),
-          timestamp: new Date().toISOString(),
-          notes: `Purchase of ${productData.brand} ${productData.model} - ${productData.reference}`
+        // Create a purchase order only if receipt generation is enabled
+        if (formData.generateReceipt && assignedCustomer) {
+          const purchaseOrder = {
+            id: generateId('order'),
+            orderNumber: `PO-${Date.now()}`,
+            orderType: 'purchase' as const,
+            customer: customers.find(c => c.id === assignedCustomer) || null,
+            product: productData,
+            watch: productData,
+            salePrice: productData.costPrice,
+            paymentMethod: 'bank_transfer' as const,
+            status: 'completed' as const,
+            date: new Date().toISOString(),
+            timestamp: new Date().toISOString(),
+            paymentDueDate: formData.paymentDueDate || new Date().toISOString(),
+            notes: `Purchase of ${productData.brand} ${productData.model} - ${productData.reference} from ${customers.find(c => c.id === assignedCustomer)?.firstName} ${customers.find(c => c.id === assignedCustomer)?.lastName}`
+          }
+          
+          console.log('🔄 StockModal: Creating purchase order...', purchaseOrder)
+          addOrder(purchaseOrder)
+          console.log('✅ StockModal: Purchase order created successfully')
         }
-        
-        addOrder(purchaseOrder)
       }
 
       closeModal()
     } catch (error) {
-      console.error('Error saving product:', error)
+      console.error('❌ StockModal: Error saving product:', error)
+      alert('Error saving product: ' + (error as Error).message)
     } finally {
       setIsSubmitting(false)
     }
@@ -277,15 +290,18 @@ export default function StockModal() {
             
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Serial Number
+                Serial Number *
               </label>
               <input
                 type="text"
                 value={formData.serial}
                 onChange={handleInputChange('serial')}
-                className="form-input w-full"
-                placeholder="Enter serial number (optional)"
+                className={`form-input w-full ${errors.serial ? 'border-red-500' : ''}`}
+                placeholder="Enter serial number"
               />
+              {errors.serial && (
+                <p className="mt-1 text-sm text-red-600">{errors.serial}</p>
+              )}
             </div>
           </div>
         </div>
@@ -577,6 +593,55 @@ export default function StockModal() {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Receipt Generation */}
+        <div>
+          <h3 className="flex items-center text-lg font-medium text-gray-900 mb-4">
+            <ClockIcon className="w-5 h-5 mr-2 text-apple-blue" />
+            Receipt & Payment
+          </h3>
+          
+          <div className="space-y-4">
+            {/* Generate Receipt Checkbox */}
+            <div className="flex items-center space-x-3">
+              <input
+                type="checkbox"
+                id="generateReceipt"
+                checked={formData.generateReceipt}
+                onChange={(e) => setFormData(prev => ({ ...prev, generateReceipt: e.target.checked }))}
+                className="w-4 h-4 text-apple-blue border-gray-300 rounded focus:ring-apple-blue"
+              />
+              <label htmlFor="generateReceipt" className="text-sm font-medium text-gray-700">
+                Generate purchase receipt
+              </label>
+            </div>
+            
+            {formData.generateReceipt && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-sm text-blue-800 mb-3">
+                  A purchase order will be created and sent to the Orders page when a customer is assigned.
+                </p>
+                
+                {/* Payment Due Date */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Payment Due Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.paymentDueDate}
+                    onChange={(e) => setFormData(prev => ({ ...prev, paymentDueDate: e.target.value }))}
+                    className="form-input w-full"
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    When will you pay the customer for this purchase?
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Form Actions */}
