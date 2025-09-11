@@ -159,10 +159,33 @@ export default function StockModal() {
 
       if (isEditing) {
         console.log('🔄 StockModal: Updating product...', productData)
-        updateWatchProduct(product.id, productData)
+        await updateWatchProduct(product.id, productData)
+        
+        // Create a purchase order if receipt generation is enabled and customer is assigned
+        if (formData.generateReceipt && assignedCustomer && !product.assignedCustomer) {
+          const purchaseOrder = {
+            id: generateId('order'),
+            orderNumber: `PO-${Date.now()}`,
+            orderType: 'purchase' as const,
+            customer: customers.find(c => c.id === assignedCustomer) || null,
+            product: productData,
+            watch: productData,
+            salePrice: productData.costPrice,
+            paymentMethod: 'bank_transfer' as const,
+            status: 'completed' as const,
+            date: new Date().toISOString(),
+            timestamp: new Date().toISOString(),
+            paymentDueDate: formData.paymentDueDate || new Date().toISOString(),
+            notes: `Purchase of ${productData.brand} ${productData.model} - ${productData.reference} from ${customers.find(c => c.id === assignedCustomer)?.firstName} ${customers.find(c => c.id === assignedCustomer)?.lastName}`
+          }
+          
+          console.log('🔄 StockModal: Creating purchase order for updated product...', purchaseOrder)
+          await addOrder(purchaseOrder)
+          console.log('✅ StockModal: Purchase order created successfully for updated product')
+        }
       } else {
         console.log('🔄 StockModal: Adding new product...', productData)
-        addWatchProduct(productData)
+        await addWatchProduct(productData)
         
         // Create a purchase order only if receipt generation is enabled
         if (formData.generateReceipt && assignedCustomer) {
@@ -183,7 +206,7 @@ export default function StockModal() {
           }
           
           console.log('🔄 StockModal: Creating purchase order...', purchaseOrder)
-          addOrder(purchaseOrder)
+          await addOrder(purchaseOrder)
           console.log('✅ StockModal: Purchase order created successfully')
         }
       }

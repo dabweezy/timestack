@@ -6,6 +6,7 @@ import CustomerDetailsModal from './CustomerDetailsModal'
 import StockModal from './StockModal'
 import ProductDetailsModal from './ProductDetailsModal'
 import SalesModal from './SalesModal'
+import OrderDetailsModal from './OrderDetailsModal'
 
 export default function ModalManager() {
   const { modals } = useSupabaseStore()
@@ -19,6 +20,7 @@ export default function ModalManager() {
       <StockModal />
       <ProductDetailsModal />
       <SalesModal />
+      <OrderDetailsModal />
       {/* Additional modals can be added here */}
     </>
   )
