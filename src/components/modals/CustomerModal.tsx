@@ -8,6 +8,7 @@ import { useSupabaseStore } from '@/store/useSupabaseStore'
 import { generateId } from '@/utils/format'
 import type { Customer, CustomerForm } from '@/types'
 import FileUpload from '@/components/ui/file-upload'
+import { imageService } from '@/lib/database'
 
 export default function CustomerModal() {
   const { modals, closeModal, addCustomer, updateCustomer } = useSupabaseStore()
@@ -53,7 +54,9 @@ export default function CustomerModal() {
         bankName: customer.bankName || '',
         iban: customer.iban || '',
         swift: customer.swift || '',
-        identification: []
+        identification: [],
+        profilePicture: customer.profilePicture,
+        identificationDocuments: customer.identificationDocuments || []
       })
     }
   }, [isEditing, customer])
@@ -67,8 +70,35 @@ export default function CustomerModal() {
     }
   }
 
-  const handleIdentificationUpload = (files: File[]) => {
-    setFormData(prev => ({ ...prev, identification: files }))
+  const handleIdentificationUpload = async (files: File[]) => {
+    if (files.length === 0) return
+    
+    try {
+      // Upload each file and get URLs
+      const uploadedDocuments = await Promise.all(
+        files.map(async (file) => {
+          const url = await imageService.uploadImage(
+            file,
+            'identification',
+            'customer',
+            customer?.id || 'temp' // Use temp ID for new customers
+          )
+          return {
+            filename: file.name,
+            url: url,
+            uploaded_at: new Date().toISOString()
+          }
+        })
+      )
+      
+      setFormData(prev => ({ 
+        ...prev, 
+        identification: files,
+        identificationDocuments: uploadedDocuments
+      }))
+    } catch (error) {
+      console.error('Error uploading identification documents:', error)
+    }
   }
 
   const validateForm = (): boolean => {
@@ -111,6 +141,8 @@ export default function CustomerModal() {
         bankName: formData.bankName?.trim(),
         iban: formData.iban?.trim(),
         swift: formData.swift?.trim(),
+        profilePicture: formData.profilePicture,
+        identificationDocuments: formData.identificationDocuments || [],
         dateAdded: isEditing ? customer.dateAdded : new Date().toISOString()
       }
 
@@ -144,6 +176,35 @@ export default function CustomerModal() {
             <UserIcon className="w-5 h-5 mr-2 text-apple-blue" />
             Personal Information
           </h3>
+          
+          {/* Profile Picture Upload */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Profile Picture (Optional)
+            </label>
+            <FileUpload
+              onChange={async (files) => {
+                if (files.length > 0) {
+                  try {
+                    const url = await imageService.uploadImage(
+                      files[0],
+                      'profile_picture',
+                      'customer',
+                      customer?.id || 'temp'
+                    )
+                    setFormData(prev => ({ ...prev, profilePicture: url }))
+                  } catch (error) {
+                    console.error('Error uploading profile picture:', error)
+                  }
+                }
+              }}
+              accept="image/*"
+              maxFiles={1}
+              maxSize={5 * 1024 * 1024} // 5MB
+              existingImage={formData.profilePicture}
+              className="w-full"
+            />
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -397,6 +458,36 @@ export default function CustomerModal() {
           <p className="text-sm text-gray-600 mb-4">
             Upload passport, driving license, or other identification documents for verification purposes.
           </p>
+          
+          {/* Show existing documents */}
+          {formData.identificationDocuments && formData.identificationDocuments.length > 0 && (
+            <div className="mb-4">
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Current Documents:</h4>
+              <div className="space-y-2">
+                {formData.identificationDocuments.map((doc, index) => (
+                  <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
+                        <span className="text-blue-600 text-xs font-medium">📄</span>
+                      </div>
+                      <span className="text-sm text-gray-700">{doc.filename}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updatedDocs = formData.identificationDocuments?.filter((_, i) => i !== index) || []
+                        setFormData(prev => ({ ...prev, identificationDocuments: updatedDocs }))
+                      }}
+                      className="text-red-500 hover:text-red-700 text-sm"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          
           <FileUpload
             onChange={handleIdentificationUpload}
             accept="image/*,.pdf"

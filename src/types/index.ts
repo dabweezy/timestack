@@ -125,6 +125,12 @@ export interface CustomerForm {
   iban: string
   swift: string
   identification: File[]
+  profilePicture?: string
+  identificationDocuments?: Array<{
+    filename: string
+    url: string
+    uploaded_at: string
+  }>
 }
 
 export interface SalesForm {
