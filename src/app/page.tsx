@@ -24,6 +24,7 @@ const pageComponents = {
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [authChecked, setAuthChecked] = useState(false)
   const currentPage = useSupabaseStore(state => state.currentPage)
   const { loading, error, loadData } = useSupabaseStore()
   const CurrentPageComponent = pageComponents[currentPage] || DashboardPage
@@ -39,6 +40,7 @@ export default function Home() {
         setIsAuthenticated(false)
       } finally {
         setIsLoading(false)
+        setAuthChecked(true)
       }
     }
 
@@ -49,6 +51,7 @@ export default function Home() {
       (event, session) => {
         setIsAuthenticated(!!session)
         setIsLoading(false)
+        setAuthChecked(true)
       }
     )
 
@@ -62,16 +65,9 @@ export default function Home() {
     }
   }, [isAuthenticated, loadData])
 
-  // Show loading screen while checking authentication
-  if (isLoading) {
-    return (
-      <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-          <p className="text-white text-lg">Loading Timestack...</p>
-        </div>
-      </div>
-    )
+  // Don't render anything until auth check is complete
+  if (!authChecked) {
+    return null
   }
 
   // Show login page if not authenticated
@@ -79,19 +75,7 @@ export default function Home() {
     return <LoginPage />
   }
 
-  // Show loading screen while loading data
-  if (loading) {
-    return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading data from Supabase...</p>
-          </div>
-        </div>
-      </DashboardLayout>
-    )
-  }
+  // No loading screen - show app immediately
 
   // Show error screen if there's an error (only for actual errors, not empty data)
   if (error && !error.includes('No rows')) {

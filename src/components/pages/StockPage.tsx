@@ -14,6 +14,7 @@ import {
 import { useSupabaseStore } from '@/store/useSupabaseStore'
 import { formatCurrency, formatDate } from '@/utils/format'
 import clsx from 'clsx'
+import CountingNumber from '@/components/CountingNumber'
 
 const statusColors = {
   'available': 'bg-green-100 text-green-800',
@@ -61,15 +62,20 @@ export default function StockPage() {
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-start gap-24 mr-8">
           {/* Total Asset Value Section */}
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-200 to-purple-300 rounded-full flex items-center justify-center border-2 border-purple-400">
-              <span className="text-blue-800 text-lg font-bold">£</span>
+            <div className="w-12 h-12 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full flex items-center justify-center border-2 border-indigo-300">
+              <span className="text-indigo-700 text-lg font-bold">£</span>
             </div>
             <div>
               <div className="text-xs font-medium text-gray-600 uppercase tracking-wide mb-1">
                 TOTAL ASSET VALUE
               </div>
               <div className="text-4xl text-gray-900 font-mono">
-                {formatCurrency(watchProducts.reduce((sum, p) => sum + p.retailPrice, 0))}
+                £<CountingNumber 
+                  number={watchProducts.reduce((sum, p) => sum + p.retailPrice, 0)}
+                  fromNumber={0}
+                  decimalPlaces={0}
+                  duration={1.5}
+                />
               </div>
             </div>
           </div>
@@ -81,7 +87,14 @@ export default function StockPage() {
           <div className="flex-1 lg:max-w-md">
             {/* Product Count */}
             <div className="flex items-center space-x-2 mb-3">
-              <span className="text-2xl font-bold text-gray-900">{watchProducts.length}</span>
+              <span className="text-2xl font-bold text-gray-900">
+                <CountingNumber 
+                  number={watchProducts.length}
+                  fromNumber={0}
+                  decimalPlaces={0}
+                  duration={1.2}
+                />
+              </span>
               <span className="text-gray-600 font-medium">products</span>
             </div>
             
@@ -108,19 +121,34 @@ export default function StockPage() {
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
                 <span className="text-sm text-gray-700">
-                  Stock: {watchProducts.filter(p => p.status === 'available').length}
+                  Stock: <CountingNumber 
+                    number={watchProducts.filter(p => p.status === 'available').length}
+                    fromNumber={0}
+                    decimalPlaces={0}
+                    duration={1.0}
+                  />
                 </span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
                 <span className="text-sm text-gray-700">
-                  Consignment: {watchProducts.filter(p => p.status === 'consignment').length}
+                  Consignment: <CountingNumber 
+                    number={watchProducts.filter(p => p.status === 'consignment').length}
+                    fromNumber={0}
+                    decimalPlaces={0}
+                    duration={1.0}
+                  />
                 </span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-red-400 rounded-full"></div>
                 <span className="text-sm text-gray-700">
-                  Sold: {watchProducts.filter(p => p.status === 'sold').length}
+                  Sold: <CountingNumber 
+                    number={watchProducts.filter(p => p.status === 'sold').length}
+                    fromNumber={0}
+                    decimalPlaces={0}
+                    duration={1.0}
+                  />
                 </span>
               </div>
             </div>

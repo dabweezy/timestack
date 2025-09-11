@@ -32,6 +32,7 @@ export default function CustomerModal() {
 
   const [errors, setErrors] = useState<Partial<CustomerForm>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSuccess, setIsSuccess] = useState(false)
 
   useEffect(() => {
     if (isEditing && customer) {
@@ -107,12 +108,17 @@ export default function CustomerModal() {
       }
 
       if (isEditing) {
-        updateCustomer(customer.id, customerData)
+        await updateCustomer(customer.id, customerData)
       } else {
-        addCustomer(customerData)
+        await addCustomer(customerData)
       }
 
-      closeModal()
+      // Show success animation
+      setIsSubmitting(false)
+      setIsSuccess(true)
+      setTimeout(() => {
+        closeModal()
+      }, 1000) // Show success state for 1 second
     } catch (error) {
       console.error('Error saving customer:', error)
     } finally {
@@ -387,12 +393,28 @@ export default function CustomerModal() {
           </button>
           <motion.button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isSuccess}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="btn btn-primary"
+            className={`btn ${isSuccess ? 'btn-success' : 'btn-primary'}`}
+            animate={isSuccess ? { scale: [1, 1.05, 1] } : {}}
+            transition={{ duration: 0.3 }}
           >
-            {isSubmitting ? 'Saving...' : (isEditing ? 'Update Customer' : 'Add Customer')}
+            {isSuccess ? (
+              <div className="flex items-center space-x-2">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Saved!</span>
+              </div>
+            ) : isSubmitting ? (
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <span>Saving...</span>
+              </div>
+            ) : (
+              isEditing ? 'Update Customer' : 'Add Customer'
+            )}
           </motion.button>
         </div>
       </form>

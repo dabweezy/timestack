@@ -22,6 +22,11 @@ export const customerService = {
       city: customer.city,
       postcode: customer.postcode,
       country: customer.country,
+      sortCode: customer.sort_code,
+      accountNumber: customer.account_number,
+      bankName: customer.bank_name,
+      iban: customer.iban,
+      swift: customer.swift,
       dateAdded: customer.created_at
     })) || []
   },
@@ -43,7 +48,12 @@ export const customerService = {
         address2: customer.address2,
         city: customer.city,
         postcode: customer.postcode,
-        country: customer.country
+        country: customer.country,
+        sort_code: customer.sortCode,
+        account_number: customer.accountNumber,
+        bank_name: customer.bankName,
+        iban: customer.iban,
+        swift: customer.swift
       })
       .select()
       .single()
@@ -61,6 +71,11 @@ export const customerService = {
       city: data.city,
       postcode: data.postcode,
       country: data.country,
+      sortCode: data.sort_code,
+      accountNumber: data.account_number,
+      bankName: data.bank_name,
+      iban: data.iban,
+      swift: data.swift,
       dateAdded: data.created_at
     }
   },
@@ -78,6 +93,11 @@ export const customerService = {
         city: updates.city,
         postcode: updates.postcode,
         country: updates.country,
+        sort_code: updates.sortCode,
+        account_number: updates.accountNumber,
+        bank_name: updates.bankName,
+        iban: updates.iban,
+        swift: updates.swift,
         updated_at: new Date().toISOString()
       })
       .eq('id', id)
@@ -97,6 +117,11 @@ export const customerService = {
       city: data.city,
       postcode: data.postcode,
       country: data.country,
+      sortCode: data.sort_code,
+      accountNumber: data.account_number,
+      bankName: data.bank_name,
+      iban: data.iban,
+      swift: data.swift,
       dateAdded: data.created_at
     }
   },

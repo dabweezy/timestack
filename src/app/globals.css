@@ -47,6 +47,10 @@ body {
   @apply bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500;
 }
 
+.btn-success {
+  @apply bg-green-500 text-white hover:bg-green-600 focus:ring-green-500;
+}
+
 /* Apple-style animations */
 .animate-apple-fade-in {
   animation: appleFadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);

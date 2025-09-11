@@ -55,7 +55,7 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
       )}
     >
       {/* TIMESTACK Logo Header */}
-      <div className="p-4 border-b border-blue-500/30 flex items-center justify-center -ml-1">
+      <div className="p-4 border-b border-blue-500/30 flex items-center justify-start -ml-1 pl-10">
         {/* Logo with BorderBeam */}
         <div className="relative rounded-lg p-2 bg-blue-600 overflow-hidden flex items-center justify-center">
           <img
@@ -65,8 +65,8 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
           />
           <BorderBeam
             size={250}
-            duration={8}
-            delay={6}
+            duration={4}
+            delay={0.5}
             borderWidth={2}
             colorFrom="#ffffff"
             colorTo="#f8fafc"
