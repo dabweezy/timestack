@@ -7,6 +7,7 @@ import BaseModal from './BaseModal'
 import { useSupabaseStore } from '@/store/useSupabaseStore'
 import { generateId } from '@/utils/format'
 import type { WatchProduct, StockForm } from '@/types'
+import FileUpload from '@/components/ui/file-upload'
 
 const watchBrands = [
   'Rolex', 'Patek Philippe', 'Audemars Piguet', 'Richard Mille', 'Vacheron Constantin',
@@ -50,7 +51,8 @@ export default function StockModal() {
     set: '',
     costPrice: '',
     stockType: 'stock',
-    description: ''
+    description: '',
+    images: []
   })
 
   const [errors, setErrors] = useState<Partial<StockForm>>({})
@@ -75,7 +77,8 @@ export default function StockModal() {
         set: product.set || '',
         costPrice: product.costPrice ? product.costPrice.toString() : '',
         stockType: product.condition === 'Very Good' ? 'consignment' : 'stock',
-        description: product.description || ''
+        description: product.description || '',
+        images: []
       })
       setAssignedCustomer(product.assignedCustomer || null)
     }
@@ -88,6 +91,10 @@ export default function StockModal() {
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }))
     }
+  }
+
+  const handleImageUpload = (files: File[]) => {
+    setFormData(prev => ({ ...prev, images: files }))
   }
 
   const validateForm = (): boolean => {
@@ -442,6 +449,20 @@ export default function StockModal() {
               </div>
             </div>
           )}
+        </div>
+
+        {/* Product Images */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Product Images
+          </label>
+          <FileUpload
+            onChange={handleImageUpload}
+            accept="image/*"
+            maxFiles={5}
+            maxSize={10 * 1024 * 1024} // 10MB
+            className="w-full"
+          />
         </div>
 
         {/* Description */}

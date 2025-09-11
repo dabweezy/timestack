@@ -7,6 +7,7 @@ import BaseModal from './BaseModal'
 import { useSupabaseStore } from '@/store/useSupabaseStore'
 import { generateId } from '@/utils/format'
 import type { Customer, CustomerForm } from '@/types'
+import FileUpload from '@/components/ui/file-upload'
 
 export default function CustomerModal() {
   const { modals, closeModal, addCustomer, updateCustomer } = useSupabaseStore()
@@ -27,7 +28,8 @@ export default function CustomerModal() {
     accountNumber: '',
     bankName: '',
     iban: '',
-    swift: ''
+    swift: '',
+    identification: []
   })
 
   const [errors, setErrors] = useState<Partial<CustomerForm>>({})
@@ -50,7 +52,8 @@ export default function CustomerModal() {
         accountNumber: customer.accountNumber || '',
         bankName: customer.bankName || '',
         iban: customer.iban || '',
-        swift: customer.swift || ''
+        swift: customer.swift || '',
+        identification: []
       })
     }
   }, [isEditing, customer])
@@ -62,6 +65,10 @@ export default function CustomerModal() {
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }))
     }
+  }
+
+  const handleIdentificationUpload = (files: File[]) => {
+    setFormData(prev => ({ ...prev, identification: files }))
   }
 
   const validateForm = (): boolean => {
@@ -380,6 +387,23 @@ export default function CustomerModal() {
               />
             </div>
           </div>
+        </div>
+
+        {/* Identification Upload */}
+        <div>
+          <h3 className="text-lg font-medium text-gray-900 mb-4">
+            Identification Documents (Optional)
+          </h3>
+          <p className="text-sm text-gray-600 mb-4">
+            Upload passport, driving license, or other identification documents for verification purposes.
+          </p>
+          <FileUpload
+            onChange={handleIdentificationUpload}
+            accept="image/*,.pdf"
+            maxFiles={3}
+            maxSize={10 * 1024 * 1024} // 10MB
+            className="w-full"
+          />
         </div>
 
         {/* Form Actions */}

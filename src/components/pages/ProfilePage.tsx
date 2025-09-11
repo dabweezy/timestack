@@ -16,6 +16,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { formatPhone } from '@/utils/format'
 import clsx from 'clsx'
+import FileUpload from '@/components/ui/file-upload'
 
 interface ProfileData {
   profilePicture?: string
@@ -83,10 +84,10 @@ export default function ProfilePage() {
     setIsEditing(false)
   }
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
+  const handleImageUpload = (files: File[]) => {
+    if (files.length > 0) {
       setIsUploading(true)
+      const file = files[0]
       // Simulate upload
       setTimeout(() => {
         const reader = new FileReader()
@@ -146,7 +147,22 @@ export default function ProfilePage() {
           <div className="flex flex-col lg:flex-row items-start lg:items-center space-y-6 lg:space-y-0 lg:space-x-8">
             {/* Profile Picture */}
             <div className="flex flex-col items-center">
-              <div className="relative">
+              {isEditing ? (
+                <div className="w-48">
+                  <FileUpload
+                    onChange={handleImageUpload}
+                    accept="image/*"
+                    maxFiles={1}
+                    maxSize={5 * 1024 * 1024} // 5MB
+                    existingImage={profileData.profilePicture}
+                    disabled={isUploading}
+                    className="w-full"
+                  />
+                  {isUploading && (
+                    <div className="mt-2 text-sm text-gray-500 text-center">Uploading...</div>
+                  )}
+                </div>
+              ) : (
                 <div className="w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
                   {profileData.profilePicture ? (
                     <img
@@ -158,21 +174,6 @@ export default function ProfilePage() {
                     <UserIcon className="w-16 h-16 text-gray-400" />
                   )}
                 </div>
-                {isEditing && (
-                  <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition-colors">
-                    <CameraIcon className="w-4 h-4" />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="hidden"
-                      disabled={isUploading}
-                    />
-                  </label>
-                )}
-              </div>
-              {isUploading && (
-                <div className="mt-2 text-sm text-gray-500">Uploading...</div>
               )}
             </div>
 

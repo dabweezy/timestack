@@ -36,6 +36,12 @@ export interface Customer {
   bankName?: string
   iban?: string
   swift?: string
+  profilePicture?: string
+  identificationDocuments?: Array<{
+    filename: string
+    url: string
+    uploaded_at: string
+  }>
   dateAdded: string
 }
 
@@ -100,6 +106,7 @@ export interface StockForm {
   costPrice: string
   stockType: 'stock' | 'consignment'
   description: string
+  images: File[]
 }
 
 export interface CustomerForm {
@@ -117,6 +124,7 @@ export interface CustomerForm {
   bankName: string
   iban: string
   swift: string
+  identification: File[]
 }
 
 export interface SalesForm {

@@ -55,16 +55,29 @@ export default function Sidebar({ isMobile = false, onMobileClose }: SidebarProp
       )}
     >
       {/* TIMESTACK Logo Header */}
-      <div className="p-4 border-b border-blue-500/30 flex items-center justify-start -ml-1 pl-10">
+      <div className={clsx(
+        "p-4 border-b border-blue-500/30 flex items-center",
+        sidebarCollapsed ? "justify-center" : "justify-start -ml-1 pl-10"
+      )}>
         {/* Logo with BorderBeam */}
         <div className="relative rounded-lg p-2 bg-blue-600 overflow-hidden flex items-center justify-center">
-          <img
-            src="https://i.ibb.co/C3Lttm0S/logv2.png"
-            alt="Timestack Logo"
-            className="w-auto h-auto max-w-[180px] max-h-[40px] object-contain block relative z-10"
-          />
+          {sidebarCollapsed ? (
+            // Collapsed: Show only the icon logo
+            <img
+              src="https://i.ibb.co/FqmywCRL/Group-74.png"
+              alt="Timestack Logo"
+              className="w-8 h-8 object-contain block relative z-10"
+            />
+          ) : (
+            // Expanded: Show full logo with text
+            <img
+              src="https://i.ibb.co/C3Lttm0S/logv2.png"
+              alt="Timestack Logo"
+              className="w-auto h-auto max-w-[180px] max-h-[40px] object-contain block relative z-10"
+            />
+          )}
           <BorderBeam
-            size={250}
+            size={sidebarCollapsed ? 48 : 250}
             duration={4}
             delay={0.5}
             borderWidth={2}

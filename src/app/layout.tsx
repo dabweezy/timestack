@@ -33,7 +33,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <script src="https://kit.fontawesome.com/your-kit-id.js" crossOrigin="anonymous" async />
       </head>
-      <body className={`${inter.className} h-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-hidden`}>
+      <body className={`${inter.className} h-full bg-white overflow-hidden`}>
         {children}
       </body>
     </html>

@@ -1,6 +1,89 @@
 import { supabase } from './supabase'
 import type { Customer, WatchProduct, Order } from '@/types'
 
+// Image upload service
+export const imageService = {
+  async uploadImage(file: File, category: string, entityType: string, entityId: string): Promise<string> {
+    // Get current user's company_id
+    const { data: { user } } = await supabase.auth.getUser()
+    const companyId = user?.user_metadata?.company_id || '550e8400-e29b-41d4-a716-446655440001'
+    
+    // Generate unique filename
+    const fileExt = file.name.split('.').pop()
+    const fileName = `${entityType}_${entityId}_${Date.now()}.${fileExt}`
+    const filePath = `${companyId}/${category}/${fileName}`
+    
+    // Upload to Supabase Storage
+    const { data, error } = await supabase.storage
+      .from('timestack-images')
+      .upload(filePath, file)
+    
+    if (error) throw error
+    
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('timestack-images')
+      .getPublicUrl(filePath)
+    
+    // Save image metadata to database
+    const { error: dbError } = await supabase
+      .from('images')
+      .insert({
+        company_id: companyId,
+        filename: fileName,
+        original_name: file.name,
+        file_size: file.size,
+        mime_type: file.type,
+        url: publicUrl,
+        category,
+        entity_type: entityType,
+        entity_id: entityId
+      })
+    
+    if (dbError) throw dbError
+    
+    return publicUrl
+  },
+
+  async getImages(entityType: string, entityId: string): Promise<any[]> {
+    const { data, error } = await supabase
+      .from('images')
+      .select('*')
+      .eq('entity_type', entityType)
+      .eq('entity_id', entityId)
+      .order('created_at', { ascending: false })
+    
+    if (error) throw error
+    return data || []
+  },
+
+  async deleteImage(imageId: string): Promise<void> {
+    // Get image record first
+    const { data: image, error: fetchError } = await supabase
+      .from('images')
+      .select('*')
+      .eq('id', imageId)
+      .single()
+    
+    if (fetchError) throw fetchError
+    
+    // Delete from storage
+    const { error: storageError } = await supabase.storage
+      .from('timestack-images')
+      .remove([image.filename])
+    
+    if (storageError) throw storageError
+    
+    // Delete from database
+    const { error: dbError } = await supabase
+      .from('images')
+      .delete()
+      .eq('id', imageId)
+    
+    if (dbError) throw dbError
+  }
+}
+
 // Customer operations
 export const customerService = {
   async getAll(): Promise<Customer[]> {
@@ -27,6 +110,8 @@ export const customerService = {
       bankName: customer.bank_name,
       iban: customer.iban,
       swift: customer.swift,
+      profilePicture: customer.profile_picture_url,
+      identificationDocuments: customer.identification_documents || [],
       dateAdded: customer.created_at
     })) || []
   },
@@ -53,7 +138,9 @@ export const customerService = {
         account_number: customer.accountNumber,
         bank_name: customer.bankName,
         iban: customer.iban,
-        swift: customer.swift
+        swift: customer.swift,
+        profile_picture_url: customer.profilePicture,
+        identification_documents: customer.identificationDocuments || []
       })
       .select()
       .single()
@@ -76,6 +163,8 @@ export const customerService = {
       bankName: data.bank_name,
       iban: data.iban,
       swift: data.swift,
+      profilePicture: data.profile_picture_url,
+      identificationDocuments: data.identification_documents || [],
       dateAdded: data.created_at
     }
   },
@@ -98,6 +187,8 @@ export const customerService = {
         bank_name: updates.bankName,
         iban: updates.iban,
         swift: updates.swift,
+        profile_picture_url: updates.profilePicture,
+        identification_documents: updates.identificationDocuments || [],
         updated_at: new Date().toISOString()
       })
       .eq('id', id)
@@ -122,6 +213,8 @@ export const customerService = {
       bankName: data.bank_name,
       iban: data.iban,
       swift: data.swift,
+      profilePicture: data.profile_picture_url,
+      identificationDocuments: data.identification_documents || [],
       dateAdded: data.created_at
     }
   },
