@@ -15,12 +15,12 @@ export default function ModalManager() {
 
   return (
     <>
-      <CustomerModal />
-      <CustomerDetailsModal />
-      <StockModal />
-      <ProductDetailsModal />
-      <SalesModal />
-      <OrderDetailsModal />
+      {modals.type === 'customer' && <CustomerModal />}
+      {modals.type === 'customerDetails' && <CustomerDetailsModal />}
+      {modals.type === 'stock' && <StockModal />}
+      {modals.type === 'productDetails' && <ProductDetailsModal />}
+      {modals.type === 'sales' && <SalesModal />}
+      {modals.type === 'order' && <OrderDetailsModal />}
       {/* Additional modals can be added here */}
     </>
   )

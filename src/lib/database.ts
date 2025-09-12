@@ -334,7 +334,7 @@ export const productService = {
         dial_color: updates.dialColor,
         condition: updates.condition,
         year_manufactured: updates.yearManufactured,
-        set: updates.set,
+        set_type: updates.set,
         cost_price: updates.costPrice,
         trade_price: updates.tradePrice,
         retail_price: updates.retailPrice,

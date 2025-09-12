@@ -35,6 +35,7 @@ const sets = [
 
 export default function StockModal() {
   const { modals, closeModal, addWatchProduct, updateWatchProduct, addOrder, customers } = useSupabaseStore()
+  
   const isEditing = modals.data?.id
   const product = modals.data as WatchProduct
   
@@ -67,6 +68,9 @@ export default function StockModal() {
 
   useEffect(() => {
     if (isEditing && product) {
+      console.log('🔄 StockModal: Editing product with data:', product)
+      console.log('🔄 StockModal: Product assignedCustomer:', product.assignedCustomer)
+      
       setFormData({
         brand: product.brand || '',
         model: product.model || '',
@@ -85,6 +89,7 @@ export default function StockModal() {
         paymentDueDate: ''
       })
       setAssignedCustomer(product.assignedCustomer || null)
+      console.log('🔄 StockModal: Set assignedCustomer to:', product.assignedCustomer || null)
     }
   }, [isEditing, product])
 
@@ -162,6 +167,13 @@ export default function StockModal() {
         await updateWatchProduct(product.id, productData)
         
         // Create a purchase order if receipt generation is enabled and customer is assigned
+        // Only create if this is a new assignment (customer wasn't previously assigned)
+        console.log('🔄 StockModal: Purchase order conditions check:')
+        console.log('  - generateReceipt:', formData.generateReceipt)
+        console.log('  - assignedCustomer:', assignedCustomer)
+        console.log('  - product.assignedCustomer:', product.assignedCustomer)
+        console.log('  - Will create purchase order:', formData.generateReceipt && assignedCustomer && !product.assignedCustomer)
+        
         if (formData.generateReceipt && assignedCustomer && !product.assignedCustomer) {
           const purchaseOrder = {
             id: generateId('order'),
@@ -180,8 +192,12 @@ export default function StockModal() {
           }
           
           console.log('🔄 StockModal: Creating purchase order for updated product...', purchaseOrder)
-          await addOrder(purchaseOrder)
-          console.log('✅ StockModal: Purchase order created successfully for updated product')
+          try {
+            const createdOrder = await addOrder(purchaseOrder)
+            console.log('✅ StockModal: Purchase order created successfully for updated product:', createdOrder)
+          } catch (error) {
+            console.error('❌ StockModal: Error creating purchase order:', error)
+          }
         }
       } else {
         console.log('🔄 StockModal: Adding new product...', productData)
@@ -247,7 +263,10 @@ export default function StockModal() {
 
   const assignedCustomerData = assignedCustomer ? customers.find(c => c.id === assignedCustomer) : null
 
-  if (modals.type !== 'stock') return null
+  // Debug logging
+  console.log('🔄 StockModal: Current assignedCustomer state:', assignedCustomer)
+  console.log('🔄 StockModal: assignedCustomerData:', assignedCustomerData)
+  console.log('🔄 StockModal: All customers:', customers)
 
   return (
     <BaseModal title={isEditing ? 'Edit Product' : 'Add New Product'} size="xl">
